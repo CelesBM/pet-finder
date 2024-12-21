@@ -4,7 +4,7 @@ import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 
 type UserData = {
-  fullName: string;
+  fullname: string;
   email: string;
   password: string;
 };
@@ -16,13 +16,13 @@ function getSHA256fromSTRING(text: string) {
 }
 
 export async function authUser(userData: UserData) {
-  const { fullName, email, password } = userData;
+  const { fullname, email, password } = userData;
   const [user, created] = await User.findOrCreate({
     where: {
       email,
     },
     defaults: {
-      fullName,
+      fullname,
       email,
     },
   });

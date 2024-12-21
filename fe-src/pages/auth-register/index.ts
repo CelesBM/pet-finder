@@ -1,4 +1,5 @@
 import { Router } from "@vaadin/router";
+import { state } from "../../state";
 
 export class AuthRegister extends HTMLElement {
   connectedCallback() {
@@ -14,10 +15,10 @@ export class AuthRegister extends HTMLElement {
       <div class="login">
         <form>
             <label for="email">EMAIL:</label>
-            <input type="email" id="email" name="email" autocomplete="email" required>
+            <input type="email" id="email" class="email" name="email" autocomplete="email" required>
              <label for="password">CONTRASEÑA:</label>
-            <input type="password" id="password" name="password" autocomplete="password" required>
-            <button type="submit">Crear cuenta</button>
+            <input type="password" id="password" class="password" name="password" autocomplete="password" required>
+            <button type="submit" class="button">Crear cuenta</button>
         </form>
         <p>Ya tienes cuenta? <a href="/login">Inicia sesión</a>.</p>
       </div>    
@@ -149,6 +150,26 @@ export class AuthRegister extends HTMLElement {
 
     </style>
        `;
+
+    const buttonEl = this.querySelector(".button") as HTMLButtonElement;
+    const emailEl = this.querySelector(".email") as HTMLInputElement;
+    const passwordEl = this.querySelector(".password") as HTMLInputElement;
+
+    buttonEl.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const currentState = state.getState();
+      currentState.email = emailEl.value;
+      currentState.password = passwordEl.value;
+      currentState.fullmane = "";
+      const newState = state.getState();
+      console.log(newState.email);
+      if (currentState.email) {
+        state.setState(currentState);
+        await state.signUp();
+      } else {
+        console.log("ERROR");
+      }
+    });
   }
 }
 

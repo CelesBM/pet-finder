@@ -88,7 +88,19 @@ app.get("/me", authMiddleware, async (req, res) => {
   res.json(user);
 });
 
+/* ESTO FUNCIONABA PERO NO TRAE LO DEL FRONT DE FE-SRC
 app.get("*", function (req, res) {
   const file = path.resolve(__dirname, "../dist/index.html"); //pet-finder\dist\index.html
   res.sendFile(file);
+});*/
+
+//pruebo lo nuevo:
+const staticDirPath = path.resolve(__dirname, "../dist");
+
+// Configura Express para servir archivos estáticos
+app.use(express.static(staticDirPath));
+
+// Responde con el archivo `index.html` solo para las rutas que no sean de recursos estáticos
+app.get("*", (req, res) => {
+  res.sendFile(path.join(staticDirPath, "index.html"));
 });
