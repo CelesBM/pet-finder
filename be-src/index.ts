@@ -36,11 +36,6 @@ app.use(
   })
 );
 
-//este cuando funcione no va a ser necesario porque lo use en auth-controllers.
-/*function getSHA256fromSTRING(text: string) {
-  return crypto.createHash("sha256").update(text).digest("hex");
-}*/
-
 //sequelize.sync({ force: true }).then(() => {
 //  console.log("Base de datos sincronizada");
 app.listen(port, () => {
@@ -48,45 +43,30 @@ app.listen(port, () => {
 });
 //});
 
-app.post("/auth", async (req, res) => {
-  if (req.body) {
-    const user = await authUser(req.body);
-    res.json(user);
-  } else {
-    res.status(400).json("Error de userData en auth-controller");
+app.post("/auth", async (req, res): Promise<void> => {
+  try {
+    if (req.body) {
+      const user = await authUser(req.body);
+      if (typeof user === "string") {
+        res.status(400).json({ error: user });
+      }
+      res.json(user);
+    } else {
+      res.status(400).json({ error: "Error de userData en auth-controller" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 
-//estaba antes pero ahora debe ir en authcontrollers la logica.
-/*app.post("/auth", async (req, res) => {
-  const { email, password } = req.body;
-  const [user, created] = await User.findOrCreate({
-    where: { email: req.body.email },
-    defaults: {
-      email,
-      password,
-    },
-  });
-  const [auth, authCreated] = await Auth.findOrCreate({
-    where: { email: req.body.email },
-    defaults: {
-      email,
-      password: getSHA256fromSTRING(req.body.password),
-      user_id: user.get("id"),
-    },
-  });
-  console.log({ authCreated, auth });
-  res.json(user);
-});*/
-
-app.post("/auth/token", async (req, res) => {
+/*app.post("/auth/token", async (req, res) => {
   if (!req.body) {
     res.status(400).json("No se ingresadon datos al body.");
   } else {
     const token = await authToken(req.body);
     res.json(token);
   }
-});
+});*/
 
 //estaba antes pero ahora debe ir en authcontrollers la logica.
 /*app.post("/auth/token", async (req, res) => {
@@ -174,19 +154,8 @@ app.get("/me", authMiddleware, async (req, res) => {
   res.json(user);
 });
 
-/* ESTO FUNCIONABA PERO NO TRAE LO DEL FRONT DE FE-SRC
-app.get("*", function (req, res) {
-  const file = path.resolve(__dirname, "../dist/index.html"); //pet-finder\dist\index.html
-  res.sendFile(file);
-});*/
-
-//pruebo lo nuevo:
 const staticDirPath = path.resolve(__dirname, "../dist");
-
-// Configura Express para servir archivos estáticos
-app.use(express.static(staticDirPath));
-
-// Responde con el archivo `index.html` solo para las rutas que no sean de recursos estáticos
+app.use(express.static(staticDirPath)); // Configuración Express para servir archivos estáticos
 app.get("*", (req, res) => {
-  res.sendFile(path.join(staticDirPath, "index.html"));
+  res.sendFile(path.join(staticDirPath, "index.html")); // Responde con el archivo `index.html` solo para las rutas que no sean de recursos estáticos
 });

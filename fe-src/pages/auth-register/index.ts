@@ -20,6 +20,7 @@ export class AuthRegister extends HTMLElement {
             <input type="password" id="password" class="password" name="password" autocomplete="password" required>
             <button type="submit" class="button">Crear cuenta</button>
         </form>
+        <p class="error-message" style="color: red; display: none;"></p>
         <p>Ya tienes cuenta? <a href="/login">Inicia sesión</a>.</p>
       </div>    
     </div>   
@@ -154,31 +155,22 @@ export class AuthRegister extends HTMLElement {
     const buttonEl = this.querySelector(".button") as HTMLButtonElement;
     const emailEl = this.querySelector(".email") as HTMLInputElement;
     const passwordEl = this.querySelector(".password") as HTMLInputElement;
+    const errorMessageEl = this.querySelector(".error-message") as HTMLElement;
 
     buttonEl.addEventListener("click", async (e) => {
       e.preventDefault();
       const currentState = state.getState();
       currentState.email = emailEl.value;
       currentState.password = passwordEl.value;
-      //currentState.fullmane = "";
-      currentState.fullmane;
-      const newState = state.getState();
-      console.log(newState.email);
 
-      await state.verifyEmail(); // Verificar el email antes de continuar
-
-      if (currentState.emailVerification?.emailVerified) {
-        console.log("El email ya está verificado.");
-        // Mostrar mensaje de error o algo similar
+      await state.signUp(); // Crear usuario nuevo
+      if (currentState.errorMessage) {
+        errorMessageEl.textContent = currentState.errorMessage;
+        errorMessageEl.style.display = "block";
       } else {
-        await state.signUp(); // Registrarse si el email no está verificado
+        errorMessageEl.style.display = "none";
+        console.log("Cuenta creada con éxito");
       }
-      /* if (currentState.email != currentState.emailVerification) {
-        state.setState(currentState);
-        await state.signUp();
-      } else {
-        console.log("ERROR");
-      }*/
     });
   }
 }

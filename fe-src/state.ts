@@ -7,6 +7,7 @@ const state = {
     password: "",
     userId: "",
     emailVerification: "",
+    errorMessage: "",
   },
   listeners: [],
 
@@ -22,23 +23,37 @@ const state = {
     console.log("Soy el setState y he cambiado", this.data);
   },
 
+  //Registro de nuevo usuario:
+
   async signUp() {
     const currentState = this.getState();
     if (currentState.email) {
-      const res = await fetch(API_BASE_URL + "/auth", {
-        method: "post",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          fullname: currentState.fullname,
-          email: currentState.email,
-          password: currentState.password,
-        }),
-      });
-      const data = await res.json();
-      console.log(data);
-      currentState.userId = data.id;
-      sessionStorage.setItem("user", JSON.stringify(currentState));
-      this.setState(currentState);
+      try {
+        const res = await fetch(API_BASE_URL + "/auth", {
+          method: "post",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            fullname: currentState.fullname,
+            email: currentState.email,
+            password: currentState.password,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          currentState.errorMessage = data.error || "Error desconocido"; // Actualización de mensaje de error
+          this.setState(currentState);
+          return;
+        }
+        currentState.userId = data.id;
+        currentState.errorMessage = ""; //Vacía errorMessage
+        sessionStorage.setItem("user", JSON.stringify(currentState));
+        this.setState(currentState);
+        console.log(data);
+      } catch (error) {
+        console.error("Error en la solicitud:", error);
+        currentState.errorMessage = "Error en la conexión con el servidor";
+        this.setState(currentState);
+      }
     }
   },
 
@@ -69,7 +84,6 @@ const state = {
         body: JSON.stringify({ email: currentState.email }),
       });
       const data = await res.json();
-      console.log(data);
       currentState.emailVerification = data;
       this.setState(currentState);
     }

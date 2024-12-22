@@ -37,9 +37,9 @@ export async function authUser(userData: UserData) {
     };
 
     if (userWithEmailVerified.emailVerified) {
-      return "El email ya está registrado y verificado.";
+      return "Este usuario ya está registrado, dirigirse a Iniciar Sesión.";
     } else {
-      return "El email ya está registrado, pero no verificado.";
+      return "El usuario ya está registrado, debe verificarlo e ir a Iniciar Sesión.";
     }
   }
 
