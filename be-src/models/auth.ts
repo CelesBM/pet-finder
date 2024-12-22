@@ -18,10 +18,11 @@ Auth.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+      field: "user_id",
     },
   },
   { sequelize, modelName: "auth" }

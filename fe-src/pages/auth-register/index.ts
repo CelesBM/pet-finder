@@ -160,15 +160,25 @@ export class AuthRegister extends HTMLElement {
       const currentState = state.getState();
       currentState.email = emailEl.value;
       currentState.password = passwordEl.value;
-      currentState.fullmane = "";
+      //currentState.fullmane = "";
+      currentState.fullmane;
       const newState = state.getState();
       console.log(newState.email);
-      if (currentState.email) {
+
+      await state.verifyEmail(); // Verificar el email antes de continuar
+
+      if (currentState.emailVerification?.emailVerified) {
+        console.log("El email ya está verificado.");
+        // Mostrar mensaje de error o algo similar
+      } else {
+        await state.signUp(); // Registrarse si el email no está verificado
+      }
+      /* if (currentState.email != currentState.emailVerification) {
         state.setState(currentState);
         await state.signUp();
       } else {
         console.log("ERROR");
-      }
+      }*/
     });
   }
 }

@@ -10,6 +10,12 @@ User.init(
       autoIncrement: true,
       primaryKey: true,
     },
+    //VER
+    emailVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    //
     fullname: {
       type: DataTypes.STRING,
       allowNull: true,

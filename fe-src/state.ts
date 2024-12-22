@@ -6,6 +6,7 @@ const state = {
     email: "",
     password: "",
     userId: "",
+    emailVerification: "",
   },
   listeners: [],
 
@@ -55,6 +56,21 @@ const state = {
       const data = await res.json();
       console.log(data);
       currentState.token = data.token;
+      this.setState(currentState);
+    }
+  },
+
+  async verifyEmail() {
+    const currentState = this.getState();
+    if (currentState.email) {
+      const res = await fetch(API_BASE_URL + "/verify-email", {
+        method: "post",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email: currentState.email }),
+      });
+      const data = await res.json();
+      console.log(data);
+      currentState.emailVerification = data;
       this.setState(currentState);
     }
   },
