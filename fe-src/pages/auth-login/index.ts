@@ -1,4 +1,5 @@
 import { Router } from "@vaadin/router";
+import { state } from "../../state";
 
 export class AuthLogin extends HTMLElement {
   connectedCallback() {
@@ -14,11 +15,12 @@ export class AuthLogin extends HTMLElement {
       <div class="login">
         <form>
             <label for="email">EMAIL:</label>
-            <input type="email" id="email" name="email" autocomplete="email" required>
+            <input type="email" id="email" class="email" name="email" autocomplete="email" required>
              <label for="password">CONTRASEÑA:</label>
-            <input type="password" id="password" name="password" autocomplete="password" required>
-            <button type="submit">Iniciar sesión</button>
+            <input type="password" id="password" class="password" name="password" autocomplete="password" required>
+            <button type="submit" class="button">Iniciar sesión</button>
         </form>
+         <p class="error-message" style="color: red; display: none;"></p>
         <p>Aún no tenes cuenta? <a href="/register">Registrate</a>.</p>
       </div>    
     </div>   
@@ -148,6 +150,29 @@ export class AuthLogin extends HTMLElement {
 
     </style>
        `;
+
+    const buttonEl = this.querySelector(".button") as HTMLButtonElement;
+    const emailEl = this.querySelector(".email") as HTMLInputElement;
+    const passwordEl = this.querySelector(".password") as HTMLInputElement;
+    const errorMessageEl = this.querySelector(".error-message") as HTMLElement;
+
+    buttonEl.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const currentState = state.getState();
+      currentState.email = emailEl.value;
+      currentState.password = passwordEl.value;
+
+      //ACA VA LA LOGICA DEL LOGIN
+      /*await state.signUp(); 
+      if (currentState.errorMessage) {
+        errorMessageEl.textContent = currentState.errorMessage;
+        errorMessageEl.style.display = "block";
+      } else {
+        errorMessageEl.style.display = "none";
+        console.log("Cuenta creada con éxito");
+        Router.go("/login");
+      }*/
+    });
   }
 }
 

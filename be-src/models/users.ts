@@ -11,10 +11,10 @@ User.init(
       primaryKey: true,
     },
     //VER
-    emailVerified: {
+    /*emailVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
-    },
+    },*/
     //
     fullname: {
       type: DataTypes.STRING,

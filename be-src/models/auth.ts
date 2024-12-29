@@ -1,4 +1,4 @@
-import { Model, DataTypes, Optional } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import { sequelize } from "./connection";
 
 export class Auth extends Model {}

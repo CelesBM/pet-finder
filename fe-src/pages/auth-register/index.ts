@@ -170,6 +170,7 @@ export class AuthRegister extends HTMLElement {
       } else {
         errorMessageEl.style.display = "none";
         console.log("Cuenta creada con éxito");
+        Router.go("/login");
       }
     });
   }
