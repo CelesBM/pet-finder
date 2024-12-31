@@ -29,6 +29,11 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/pg": "^8.11.10"
+    "@types/pg": "^8.11.10",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
+    "process": "^0.11.10",
+    "util": "^0.12.5",
+    "vm-browserify": "^1.1.2"
   }
 }

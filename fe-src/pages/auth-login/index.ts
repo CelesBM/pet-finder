@@ -161,17 +161,10 @@ export class AuthLogin extends HTMLElement {
       const currentState = state.getState();
       currentState.email = emailEl.value;
       currentState.password = passwordEl.value;
-
-      //ACA VA LA LOGICA DEL LOGIN
-      /*await state.signUp(); 
-      if (currentState.errorMessage) {
-        errorMessageEl.textContent = currentState.errorMessage;
-        errorMessageEl.style.display = "block";
-      } else {
-        errorMessageEl.style.display = "none";
-        console.log("Cuenta creada con éxito");
-        Router.go("/login");
-      }*/
+      state.setState(currentState);
+      await state.autenticate();
+      await state.login();
+      console.log(currentState);
     });
   }
 }

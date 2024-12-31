@@ -8,6 +8,9 @@ const state = {
     userId: "",
     emailVerification: "",
     errorMessage: "",
+    localidad: "",
+    userLat: "",
+    userLong: "",
   },
   listeners: [],
 
@@ -45,6 +48,8 @@ const state = {
           return;
         }
         currentState.userId = data.id;
+        currentState.email = data.email;
+        currentState.fullname = data.fullname;
         currentState.errorMessage = ""; //Vacía errorMessage
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
@@ -60,33 +65,70 @@ const state = {
   async autenticate() {
     const currentState = this.getState();
     if (currentState.email && currentState.password) {
-      const res = await fetch(API_BASE_URL + "/auth/token", {
-        method: "post",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          email: currentState.email,
-          password: currentState.password,
-        }),
-      });
-      const data = await res.json();
-      console.log(data);
-      currentState.token = data.token;
-      this.setState(currentState);
+      try {
+        const res = await fetch(API_BASE_URL + "/auth/token", {
+          method: "post",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            email: currentState.email,
+            password: currentState.password,
+          }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          currentState.errorMessage = data.error || "Error desconocido";
+          this.setState(currentState);
+          return;
+        }
+
+        currentState.token = data.token;
+
+        currentState.errorMessage = "";
+        sessionStorage.setItem("user", JSON.stringify(currentState));
+        this.setState(currentState);
+      } catch (error) {
+        console.error("Error en la autenticación:", error);
+        currentState.errorMessage = "Error en la conexión con el servidor";
+        this.setState(currentState);
+      }
     }
+    console.log("Estado después de autenticate:", this.getState());
   },
 
-  async verifyEmail() {
+  async login() {
     const currentState = this.getState();
-    if (currentState.email) {
-      const res = await fetch(API_BASE_URL + "/verify-email", {
+    try {
+      const res = await fetch(API_BASE_URL + "/me", {
         method: "post",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email: currentState.email }),
+        headers: {
+          "content-type": "application/json",
+          Authorization: `bearer ${currentState.token}`,
+        },
       });
       const data = await res.json();
-      currentState.emailVerification = data;
+
+      if (!res.ok) {
+        currentState.errorMessage = data.error || "Error desconocido";
+        this.setState(currentState);
+        return;
+      }
+
+      // Verificar datos obtenidos
+      currentState.fullname = data.user.fullname || "Nombre no registrado";
+      currentState.email = data.user.email || "Email no registrado";
+      currentState.localidad = data.user.localidad || "Localidad no registrada";
+      currentState.userId = data.user.id || "ID no registrado";
+      currentState.userLat = data.user.lat || null;
+      currentState.userLong = data.user.long || null;
+      sessionStorage.setItem("user", JSON.stringify(currentState));
+      this.setState(currentState);
+    } catch (error) {
+      console.error("Error en el login:", error);
+      currentState.errorMessage = "Error en la conexión con el servidor";
       this.setState(currentState);
     }
+    console.log("Estado después de login:", this.getState());
   },
 };
 
