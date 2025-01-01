@@ -65,15 +65,6 @@ app.post("/auth", async (req, res): Promise<void> => {
   }
 });
 
-/*app.post("/auth/token", async (req, res) => {
-  if (!req.body) {
-    res.status(400).json("No se ingresadon datos al body.");
-  } else {
-    const token = await authToken(req.body);
-    res.json(token);
-  }
-});*/
-
 app.post("/auth/token", async (req, res): Promise<void> => {
   if (!req.body) {
     res.status(400).json({ error: "No se ingresaron datos al body." });

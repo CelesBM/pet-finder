@@ -206,7 +206,7 @@ export class AuthLogin extends HTMLElement {
         errorMessageEl.style.display = "block";
       } else {
         errorMessageEl.style.display = "none";
-        Router.go("/home"); // Redirigir al usuario después de login exitoso
+        console.log("todo ok el login");
       }
     });
   }

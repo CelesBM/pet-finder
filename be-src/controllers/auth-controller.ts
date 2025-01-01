@@ -75,7 +75,7 @@ export async function authUser(userData: UserData) {
   }
 }*/
 
-export async function authToken(dataAuth: AuthData) {
+/*export async function authToken(dataAuth: AuthData) {
   const { email, password } = dataAuth;
   const auth = await Auth.findOne({
     where: {
@@ -91,6 +91,40 @@ export async function authToken(dataAuth: AuthData) {
     };
   }
 
+  const user = await User.findOne({
+    where: { id: auth.get("userId") },
+  });
+
+  if (user) {
+    const token = jwt.sign({ user }, secretCrypto);
+    return { token: token };
+  }
+
+  return { error: "Error al generar el token." }; // Puedes agregar más detalles si es necesario.
+}*/
+
+export async function authToken(dataAuth: AuthData) {
+  const { email, password } = dataAuth;
+  const auth = await Auth.findOne({
+    where: {
+      email,
+    },
+  });
+
+  // Verificar si el usuario no existe
+  if (!auth) {
+    return { error: "Usuario no registrado." };
+  }
+
+  // Usar el método get() de Sequelize para acceder a los valores de las propiedades
+  const authPassword = auth.get("password"); // Obtener el valor de 'password' con get()
+
+  // Verificar si la contraseña es incorrecta
+  if (authPassword !== getSHA256fromSTRING(password)) {
+    return { error: "Contraseña incorrecta." };
+  }
+
+  // Si el usuario existe y la contraseña es correcta
   const user = await User.findOne({
     where: { id: auth.get("userId") },
   });
