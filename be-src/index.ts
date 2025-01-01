@@ -14,26 +14,25 @@ import {
   getUser,
   loginUser,
 } from "./controllers/auth-controller";
-//import { verifyEmail } from "./controllers/users-controller";
 import { emitWarning } from "process";
 
 const app = express();
-const port = 4000; // luego agregar el process.env.PORT || 3000
+const port = 4000; // luego agregar el process.env.PORT || 4000
 const SECRET = "HJAFDHNAJKFBWIE";
 
-// Middleware para configurar los headers para permitir CORS:
+//Middleware para configurar los headers para permitir CORS:
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS"
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next(); //Llama al siguiente middleware o controlador de la ruta
+  next(); //llama al siguiente middleware o controlador de la ruta
 });
 
 app.use(express.json());
 
-// Middleware para agregar los encabezados necesarios en las respuestas HTTP, para permitir solicitudes entre diferentes dominios:
+//Middleware para agregar los encabezados necesarios en las respuestas HTTP, para permitir solicitudes entre diferentes dominios:
 app.use(
   cors({
     origin: "http://localhost:4000",
@@ -69,15 +68,10 @@ app.post("/auth/token", async (req, res): Promise<void> => {
   if (!req.body) {
     res.status(400).json({ error: "No se ingresaron datos al body." });
   }
-
   const tokenResponse = await authToken(req.body);
-
   if (tokenResponse.error) {
-    // Si la respuesta contiene un error, retornamos un código 400
     res.status(400).json({ error: tokenResponse.error });
   }
-
-  // Si no hay error, retornamos el token
   res.json(tokenResponse);
 });
 
@@ -89,9 +83,7 @@ app.use(
     if (req.userauth) {
       res.json({ user: req.userauth });
     } else {
-      res.status(401).json({
-        error: "No autorizado.",
-      });
+      res.status(401).json({ error: "No autorizado." });
     }
   }
 );
@@ -115,7 +107,7 @@ app.post("/login", async (req: Request, res: Response) => {
 });
 
 const staticDirPath = path.resolve(__dirname, "../dist");
-app.use(express.static(staticDirPath)); // Configuración Express para servir archivos estáticos
+app.use(express.static(staticDirPath)); //configuración Express para servir archivos estáticos
 app.get("*", (req, res) => {
-  res.sendFile(path.join(staticDirPath, "index.html")); // Responde con el archivo `index.html` solo para las rutas que no sean de recursos estáticos
+  res.sendFile(path.join(staticDirPath, "index.html")); //responde con el archivo `index.html` solo para las rutas que no sean de recursos estáticos
 });

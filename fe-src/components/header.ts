@@ -164,10 +164,12 @@ export function initHeader() {
         `;
         shadow.appendChild(style);
 
-        const menuIcon = divEl.querySelector(".menu-icon");
-        const overlayEl = divEl.querySelector(".overlay");
-        const closeButton = divEl.querySelector(".close-button");
-        const imgEl = shadow.querySelector(".map-img");
+        const menuIcon = divEl.querySelector(".menu-icon") as HTMLDivElement;
+        const overlayEl = divEl.querySelector(".overlay") as HTMLDivElement;
+        const closeButton = divEl.querySelector(
+          ".close-button"
+        ) as HTMLButtonElement;
+        const imgEl = shadow.querySelector(".map-img") as HTMLImageElement;
 
         menuIcon.addEventListener("click", () => {
           overlayEl.classList.add("active");

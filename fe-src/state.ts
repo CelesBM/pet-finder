@@ -27,7 +27,6 @@ const state = {
   },
 
   //Registro de nuevo usuario:
-
   async signUp() {
     const currentState = this.getState();
     if (currentState.email) {
@@ -43,14 +42,14 @@ const state = {
         });
         const data = await res.json();
         if (!res.ok) {
-          currentState.errorMessage = data.error || "Error desconocido"; // Actualización de mensaje de error
+          currentState.errorMessage = data.error || "Error desconocido"; //mensaje de error en el frontend según lo que devuelve el back
           this.setState(currentState);
           return;
         }
         currentState.userId = data.id;
         currentState.email = data.email;
         currentState.fullname = data.fullname;
-        currentState.errorMessage = ""; //Vacía errorMessage
+        currentState.errorMessage = ""; //vacía errorMessage
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
         console.log(data);
@@ -62,6 +61,7 @@ const state = {
     }
   },
 
+  //Corrobora que el usuario esté registrado y la contraseña sea correcta:
   async autenticate() {
     const currentState = this.getState();
     if (currentState.email && currentState.password) {
@@ -75,15 +75,11 @@ const state = {
           }),
         });
         const data = await res.json();
-
         if (!res.ok) {
-          // Si el servidor devuelve un error, asignar el mensaje de error correctamente
-          currentState.errorMessage = data.error || "Error desconocido.";
+          currentState.errorMessage = data.error || "Error desconocido."; //mensaje de error en el frontend según lo que devuelve el back
           this.setState(currentState);
           return;
         }
-
-        // Si no hay error, guardar los datos de usuario en el estado
         currentState.userId = data.id;
         currentState.email = data.email;
         currentState.errorMessage = "";
@@ -101,6 +97,7 @@ const state = {
     }
   },
 
+  /*VERIFICAR PARA QUE USO ESTA FUNCION, YA QUE USUARIO Y CONTRASEÑA LO HICE EL AUTHTOKEN Y AUTENTICATE, ESTA SOLAMENTE DEBERIA TOMAR EL TOKEN QUE SEA EL CORRECTO
   async login() {
     const currentState = this.getState();
     try {
@@ -134,7 +131,7 @@ const state = {
       this.setState(currentState);
     }
     console.log("Estado después de login:", this.getState());
-  },
+  },*/
 };
 
 export function initializeApp() {

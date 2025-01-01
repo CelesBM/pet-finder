@@ -163,7 +163,7 @@ export class AuthRegister extends HTMLElement {
       currentState.email = emailEl.value;
       currentState.password = passwordEl.value;
 
-      await state.signUp(); // Crear usuario nuevo
+      await state.signUp(); //crear usuario nuevo
       if (currentState.errorMessage) {
         errorMessageEl.textContent = currentState.errorMessage;
         errorMessageEl.style.display = "block";

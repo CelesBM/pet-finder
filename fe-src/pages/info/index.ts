@@ -97,12 +97,14 @@ export class Info extends HTMLElement {
     </style>
        `;
 
-    const loginEl = this.querySelector(".go-login");
+    const loginEl = this.querySelector(".go-login") as HTMLButtonElement;
+    const registerEl = this.querySelector(".go-register") as HTMLButtonElement;
+
     loginEl.addEventListener("click", (e) => {
       e.preventDefault();
       Router.go("/login");
     });
-    const registerEl = this.querySelector(".go-register");
+
     registerEl.addEventListener("click", (e) => {
       e.preventDefault();
       Router.go("/register");
