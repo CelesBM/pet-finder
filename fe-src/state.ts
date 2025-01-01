@@ -67,7 +67,7 @@ const state = {
     if (currentState.email && currentState.password) {
       try {
         const res = await fetch(API_BASE_URL + "/auth/token", {
-          method: "post",
+          method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
             email: currentState.email,
@@ -77,23 +77,28 @@ const state = {
         const data = await res.json();
 
         if (!res.ok) {
-          currentState.errorMessage = data.error || "Error desconocido";
+          // Si el servidor devuelve un error, asignar el mensaje de error correctamente
+          currentState.errorMessage = data.error || "Error desconocido.";
           this.setState(currentState);
           return;
         }
 
-        currentState.token = data.token;
-
+        // Si no hay error, guardar los datos de usuario en el estado
+        currentState.userId = data.id;
+        currentState.email = data.email;
         currentState.errorMessage = "";
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
+        console.log("data autenticate", data);
       } catch (error) {
         console.error("Error en la autenticación:", error);
-        currentState.errorMessage = "Error en la conexión con el servidor";
+        currentState.errorMessage = "Error en la conexión con el servidor.";
         this.setState(currentState);
       }
+    } else {
+      currentState.errorMessage = "Por favor, completa todos los campos.";
+      this.setState(currentState);
     }
-    console.log("Estado después de autenticate:", this.getState());
   },
 
   async login() {

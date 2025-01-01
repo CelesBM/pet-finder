@@ -55,7 +55,7 @@ export async function authUser(userData: UserData) {
   return user;
 }
 
-export async function authToken(dataAuth: AuthData) {
+/*export async function authToken(dataAuth: AuthData) {
   const { email, password } = dataAuth;
   const auth = await Auth.findOne({
     where: {
@@ -64,9 +64,7 @@ export async function authToken(dataAuth: AuthData) {
     },
   });
   if (!auth) {
-    return {
-      error: "Este usuario no está registrado, por lo cual no tiene token.",
-    };
+    return "Este usuario no está registrado, por lo cual no tiene token.";
   }
   const user = await User.findOne({
     where: { id: auth.get("userId") },
@@ -75,6 +73,34 @@ export async function authToken(dataAuth: AuthData) {
     const token = jwt.sign({ user }, secretCrypto);
     return { token: token };
   }
+}*/
+
+export async function authToken(dataAuth: AuthData) {
+  const { email, password } = dataAuth;
+  const auth = await Auth.findOne({
+    where: {
+      email,
+      password: getSHA256fromSTRING(password),
+    },
+  });
+
+  if (!auth) {
+    // Retornar el mensaje de error y establecer el código de estado 400
+    return {
+      error: "Este usuario no está registrado.",
+    };
+  }
+
+  const user = await User.findOne({
+    where: { id: auth.get("userId") },
+  });
+
+  if (user) {
+    const token = jwt.sign({ user }, secretCrypto);
+    return { token: token };
+  }
+
+  return { error: "Error al generar el token." }; // Puedes agregar más detalles si es necesario.
 }
 
 export function authMiddleware(

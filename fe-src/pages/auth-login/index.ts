@@ -156,17 +156,61 @@ export class AuthLogin extends HTMLElement {
     const passwordEl = this.querySelector(".password") as HTMLInputElement;
     const errorMessageEl = this.querySelector(".error-message") as HTMLElement;
 
+    /* buttonEl.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const currentState = state.getState();
+      currentState.email = emailEl.value;
+      currentState.password = passwordEl.value;
+      //Mensaje de error si no se completan los campos:
+      if (!emailEl.value || !passwordEl.value) {
+        errorMessageEl.textContent = "Por favor, completa todos los campos.";
+        errorMessageEl.style.display = "block";
+        return;
+      }
+      await state.autenticate();
+      if (currentState.errorMessage) {
+        errorMessageEl.textContent = currentState.errorMessage;
+        errorMessageEl.style.display = "block";
+      } else {
+        errorMessageEl.style.display = "none";
+        console.log("Cuenta creada con éxito");
+      }
+      if (currentState.errorMessage) {
+        errorMessageEl.textContent = currentState.errorMessage;
+        errorMessageEl.style.display = "block";
+      } else {
+        errorMessageEl.style.display = "none";
+      }
+    });*/
+
     buttonEl.addEventListener("click", async (e) => {
       e.preventDefault();
       const currentState = state.getState();
       currentState.email = emailEl.value;
       currentState.password = passwordEl.value;
-      state.setState(currentState);
+
+      // Mensaje de error si no se completan los campos
+      if (!emailEl.value || !passwordEl.value) {
+        errorMessageEl.textContent = "Por favor, completa todos los campos.";
+        errorMessageEl.style.display = "block";
+        return;
+      }
+
       await state.autenticate();
-      await state.login();
-      console.log(currentState);
+
+      // Mostrar mensaje de error o redirigir
+      const updatedState = state.getState();
+      console.log(updatedState);
+      if (updatedState.errorMessage) {
+        errorMessageEl.textContent = updatedState.errorMessage;
+        errorMessageEl.style.display = "block";
+      } else {
+        errorMessageEl.style.display = "none";
+        Router.go("/home"); // Redirigir al usuario después de login exitoso
+      }
     });
   }
 }
 
 customElements.define("login-page", AuthLogin);
+//NO ME FUNCIONA CUANDO LA CONTRASEÑA ESTA MAL, Y VER CUANDO NO ESTA REGISTRADO
