@@ -10,5 +10,7 @@ window.addEventListener("load", () => {
     { path: "/login", component: "login-page" },
     { path: "/register", component: "register-page" },
     { path: "/info", component: "info-page" },
+    { path: "/personal-data", component: "personaldata-page" },
+    { path: "/edit-personal", component: "edit-personaldata-page" },
   ]);
 });

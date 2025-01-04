@@ -35,7 +35,7 @@ const state = {
           method: "post",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            fullname: currentState.fullname,
+            //fullname: currentState.fullname,
             email: currentState.email,
             password: currentState.password,
           }),
@@ -48,7 +48,7 @@ const state = {
         }
         currentState.userId = data.id;
         currentState.email = data.email;
-        currentState.fullname = data.fullname;
+        //currentState.fullname = data.fullname;
         currentState.errorMessage = ""; //vacía errorMessage
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
@@ -80,6 +80,7 @@ const state = {
           this.setState(currentState);
           return;
         }
+        currentState.token = data.token;
         currentState.userId = data.id;
         currentState.email = data.email;
         currentState.errorMessage = "";
@@ -97,9 +98,15 @@ const state = {
     }
   },
 
-  /*VERIFICAR PARA QUE USO ESTA FUNCION, YA QUE USUARIO Y CONTRASEÑA LO HICE EL AUTHTOKEN Y AUTENTICATE, ESTA SOLAMENTE DEBERIA TOMAR EL TOKEN QUE SEA EL CORRECTO
-  async login() {
+  async signIn() {
     const currentState = this.getState();
+    if (!currentState.token) {
+      console.error("No hay token para autenticar al usuario.");
+      currentState.errorMessage =
+        "Error de autenticación. Por favor, inicia sesión nuevamente.";
+      this.setState(currentState);
+      return;
+    }
     try {
       const res = await fetch(API_BASE_URL + "/me", {
         method: "post",
@@ -109,6 +116,7 @@ const state = {
         },
       });
       const data = await res.json();
+      console.log(data);
 
       if (!res.ok) {
         currentState.errorMessage = data.error || "Error desconocido";
@@ -131,7 +139,7 @@ const state = {
       this.setState(currentState);
     }
     console.log("Estado después de login:", this.getState());
-  },*/
+  },
 };
 
 export function initializeApp() {

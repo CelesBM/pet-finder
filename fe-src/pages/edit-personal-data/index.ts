@@ -1,32 +1,32 @@
 import { Router } from "@vaadin/router";
 import { state } from "../../state";
 
-export class AuthLogin extends HTMLElement {
+export class EditPersonalData extends HTMLElement {
   connectedCallback() {
     this.render();
   }
   render() {
     this.innerHTML = `
     <header-component></header-component>
-    <div class="login-container">
-      <img src="https://cdn-icons-png.flaticon.com/512/3636/3636172.png"/>
-      <h1>Ingresar</h1>
-      <p>Ingresá tus datos para continuar.</p>
-      <div class="login">
+    <div class="data-container">
+      <h1>Mis datos</h1>
+      <p>Complete los datos por favor.</p>
+      <div class="personal-data">
         <form>
-            <label for="email">EMAIL:</label>
-            <input type="email" id="email" class="email" name="email" autocomplete="email" required>
-             <label for="password">CONTRASEÑA:</label>
-            <input type="password" id="password" class="password" name="password" autocomplete="password" required>
-            <button type="submit" class="button">Iniciar sesión</button>
+            <label for="name">NOMBRE:</label>
+            <input type="text" id="name" class="name" name="name" autocomplete="name" required>
+             <label for="adress">LOCALIDAD:</label>
+            <input type="text" id="adress" class="adress" name="adress" autocomplete="adress" required>
+            <p class= "aclaration">Debe colocar cuidad y provincia, por ejemplo "Flores, Buenos Aires"</p>
+             <p class="error-message" style="color: red; display: none;"></p>
+            <button type="submit" class="button">Guardar</button>
         </form>
-         <p class="error-message" style="color: red; display: none;"></p>
-        <p>Aún no tenes cuenta? <a href="/register">Registrate</a>.</p>
+        <p class="error-message" style="color: red; display: none;"></p>
       </div>    
     </div>   
 
     <style>
-       .login-container{
+       .data-container{
        padding: 60px 30px;
        display: flex;
        flex-direction: column;
@@ -38,24 +38,6 @@ export class AuthLogin extends HTMLElement {
           .login-container{
           padding: 40px 30px;
           }
-      }
-       
-       img{
-       height: 200px; 
-       }
-
-      @media (min-width: 1085px) {
-          img {
-          height: 250px;
-          }
-      }
-
-      .home-info{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 15px;
-      align-items: center;
       }
 
       h1{
@@ -78,6 +60,21 @@ export class AuthLogin extends HTMLElement {
       @media (min-width: 1085px) {
           p {
           font-size: 27px;
+          margin-bottom: 25px;
+          }
+      }
+
+      .aclaration{
+      font-size: 15px;
+      font-style: italic;
+      text-align: start;
+      margin-bottom: 15px;
+      padding: 0px 20px;
+      }
+
+      @media (min-width: 1085px) {
+          .aclaration {
+          font-size: 20px;
           margin-bottom: 25px;
           }
       }
@@ -141,45 +138,38 @@ export class AuthLogin extends HTMLElement {
           width: 400px;
           }
       }
-      
+
        a{
        color:rgb(68, 101, 128);
        font-style: bold;
        font-size: 20px;
-    }
+      }
+
 
     </style>
        `;
 
     const buttonEl = this.querySelector(".button") as HTMLButtonElement;
-    const emailEl = this.querySelector(".email") as HTMLInputElement;
-    const passwordEl = this.querySelector(".password") as HTMLInputElement;
+    const nameEl = this.querySelector(".name") as HTMLInputElement;
+    const localidadEl = this.querySelector(".adress") as HTMLInputElement;
     const errorMessageEl = this.querySelector(".error-message") as HTMLElement;
 
-    buttonEl.addEventListener("click", async (e) => {
+    buttonEl.addEventListener("click", (e) => {
       e.preventDefault();
-      const currentState = state.getState();
-      currentState.email = emailEl.value;
-      currentState.password = passwordEl.value;
-      if (!emailEl.value || !passwordEl.value) {
+      if (nameEl.value && localidadEl.value !== "") {
+        const currentState = state.getState();
+        currentState.fullName = nameEl.value;
+        currentState.localidad = localidadEl.value;
+        state.setState(currentState);
+        //await state.setLongLatUser(currentState.localidad);
+        //await state.agregarDatos();
+        //Router.go("/");
+      } else {
         errorMessageEl.textContent = "Por favor, completa todos los campos.";
         errorMessageEl.style.display = "block";
-        return;
-      }
-      await state.autenticate(); //corrobora si el usuario está registrado y la contraseña es correcta.
-      const updatedState = state.getState();
-      console.log(updatedState);
-      if (updatedState.errorMessage) {
-        errorMessageEl.textContent = updatedState.errorMessage;
-        errorMessageEl.style.display = "block";
-      } else {
-        errorMessageEl.style.display = "none";
-        console.log("Login exitoso.");
-        await state.signIn(); //una vez que el login fue exitoso y tengo el token en la data llamo la función
       }
     });
   }
 }
 
-customElements.define("login-page", AuthLogin);
-//NO ME FUNCIONA CUANDO LA CONTRASEÑA ESTA MAL, Y VER CUANDO NO ESTA REGISTRADO
+customElements.define("edit-personaldata-page", EditPersonalData);
