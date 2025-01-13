@@ -14,6 +14,7 @@ import {
   getUser,
   loginUser,
 } from "./controllers/auth-controller";
+import { updateUserData } from "./controllers/users-controller";
 import { emitWarning } from "process";
 
 const app = express();
@@ -42,7 +43,7 @@ app.use(
 );
 
 //sequelize.sync({ force: true }).then(() => {
-//  console.log("Base de datos sincronizada");
+//console.log("Base de datos sincronizada");
 app.listen(port, () => {
   console.log("Listening on port", port);
 });
@@ -103,6 +104,19 @@ app.post("/login", async (req: Request, res: Response) => {
     res.json(user);
   } else {
     res.status(400).json("Body vacio");
+  }
+});
+
+app.post("/update-personal", async (req, res) => {
+  try {
+    if (req.body.userId) {
+      const updatedUser = await updateUserData(req.body);
+      res.json(updatedUser); //devuelve datos actualizados
+    } else {
+      res.status(400).json({ error: "No se registra userId" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 

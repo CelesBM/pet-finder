@@ -6,7 +6,7 @@ const state = {
     email: "",
     password: "",
     userId: "",
-    emailVerification: "",
+    isLoggedIn: false,
     errorMessage: "",
     localidad: "",
     userLat: "",
@@ -83,6 +83,7 @@ const state = {
         currentState.token = data.token;
         currentState.userId = data.id;
         currentState.email = data.email;
+        currentState.isLoggedIn = true;
         currentState.errorMessage = "";
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
@@ -98,6 +99,7 @@ const state = {
     }
   },
 
+  //Función para el login, corroborando token:
   async signIn() {
     const currentState = this.getState();
     if (!currentState.token) {
@@ -139,6 +141,27 @@ const state = {
       this.setState(currentState);
     }
     console.log("Estado después de login:", this.getState());
+  },
+
+  async changePersonalData() {
+    const currentState = this.getState();
+    if (currentState.userId) {
+      const response = await fetch(API_BASE_URL + "/update-personal", {
+        method: "post",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          fullname: currentState.fullname,
+          localidad: currentState.localidad,
+          userId: currentState.userId,
+          lat: currentState.userLat,
+          long: currentState.userLong,
+        }),
+      });
+      const data = await response.json();
+      console.log("Dara de changePersonalData: ", data);
+      //currentState.update = data;
+      this.setState(currentState);
+    }
   },
 };
 

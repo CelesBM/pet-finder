@@ -1,4 +1,5 @@
 import { Router } from "@vaadin/router";
+import { state } from "../state";
 
 export function initHeader() {
   customElements.define(
@@ -12,6 +13,10 @@ export function initHeader() {
       render() {
         const shadow = this.attachShadow({ mode: "open" });
         const divEl = document.createElement("div");
+        const currentState = state.getState();
+        const loginText = currentState.isLoggedIn
+          ? "Cerrar sesión"
+          : "Iniciar sesión";
 
         divEl.innerHTML = `
                 <div class="header-container">
@@ -25,7 +30,7 @@ export function initHeader() {
                 <li class="menu-info">Mis datos</li>
                 <li class="menu-reports">Mis mascotas reportadas</li>
                 <li class="menu-new-report">Reportar mascota</li>
-                <li class="menu-login">Iniciar sesión</li>
+                <li class="menu-login">${loginText}</li>
             </div>    
         </div>
         <div class="overlay">
@@ -34,7 +39,7 @@ export function initHeader() {
                 <li class="menu-info">Mis datos</li>
                 <li class="menu-reports">Mis mascotas reportadas</li>
                 <li class="menu-new-report">Reportar mascota</li>
-                <li class="menu-login">Iniciar sesión</li>
+                <li class="menu-login">${loginText}</li>
             </ul>
         </div>
         `;
@@ -170,6 +175,36 @@ export function initHeader() {
           ".close-button"
         ) as HTMLButtonElement;
         const imgEl = shadow.querySelector(".map-img") as HTMLImageElement;
+
+        divEl.querySelector(".menu-info")?.addEventListener("click", () => {
+          Router.go("/personal-data");
+        });
+
+        /*  divEl.querySelector(".menu-login")?.addEventListener("click", () => {
+          if (currentState.isLoggedIn === false) {
+            state.setState({ ...currentState, isLoggedIn: false });
+            this.render();
+          } else {
+            Router.go("/login");
+          }
+        });*/
+
+        overlayEl.querySelector(".menu-info")?.addEventListener("click", () => {
+          Router.go("/personal-data");
+          overlayEl.classList.remove("active");
+        });
+
+        /*  overlayEl
+          .querySelector(".menu-login")
+          ?.addEventListener("click", () => {
+            if (currentState.isLoggedIn) {
+              state.setState({ ...currentState, isLoggedIn: false });
+              this.render();
+            } else {
+              Router.go("/login");
+            }
+            overlayEl.classList.remove("active");
+          });*/
 
         menuIcon.addEventListener("click", () => {
           overlayEl.classList.add("active");

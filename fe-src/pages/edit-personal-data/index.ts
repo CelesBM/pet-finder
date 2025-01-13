@@ -158,7 +158,7 @@ export class EditPersonalData extends HTMLElement {
       e.preventDefault();
       if (nameEl.value && localidadEl.value !== "") {
         const currentState = state.getState();
-        currentState.fullName = nameEl.value;
+        currentState.fullname = nameEl.value;
         currentState.localidad = localidadEl.value;
         state.setState(currentState);
         //await state.setLongLatUser(currentState.localidad);
