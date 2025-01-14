@@ -1,5 +1,5 @@
 import { User } from "../models/users";
-//import { userDataAlgolia } from "../models/connection";
+import { userDataAlgolia } from "../models/connection";
 
 type UserData = {
   fullname: string;
@@ -19,9 +19,9 @@ export async function updateUserData(userData: UserData) {
     return "No se encuentra el usuario";
   }
   //NUEVO ALGOLIA 13/1
-  /* try {
+  try {
     const userAlgolia = await userDataAlgolia.partialUpdateObject({
-      objectId: updatedUser.get("id"),
+      objectID: updatedUser.get("id"),
       fullname,
       localidad,
       _geoloc: {
@@ -31,7 +31,7 @@ export async function updateUserData(userData: UserData) {
     });
   } catch (error) {
     return error;
-  }*/
+  }
   //TERMINA NUEVO ALGOLIA
   if (updatedUser) {
     return updatedUser;
