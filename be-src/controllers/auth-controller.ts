@@ -1,13 +1,15 @@
-import { Auth } from "../models/auth";
-import { User } from "../models/users";
 import { Request, Response, NextFunction } from "express";
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
+import { Auth } from "../models/auth";
+import { User } from "../models/users";
+//import { userDataAlgolia } from "../models/connection";
 
 type UserData = {
   fullname: string;
   email: string;
   password: string;
+  localidad: string;
 };
 
 type AuthData = {
@@ -24,7 +26,7 @@ function getSHA256fromSTRING(text: string) {
 
 //Funcion para crear un nuevo usuario:
 export async function authUser(userData: UserData) {
-  const { fullname, email, password } = userData;
+  const { fullname, email, password, localidad } = userData;
   const existingUser = await User.findOne({ where: { email } }); //verificar si el usuario ya existe
   if (existingUser) {
     return "Este usuario ya está registrado, dirigirse a Iniciar Sesión.";
@@ -46,7 +48,20 @@ export async function authUser(userData: UserData) {
       userId: user.get("id"),
     },
   });
-  return user;
+  //NUEVO VER ALGOLIA 13/1
+  /* if (created == true) {
+    const userAlgolia = await userDataAlgolia.saveObject({
+      objectId: user.get("id"),
+      fullname,
+      email,
+      localidad,
+    });
+    return user; //usuario creado
+  } else {
+    return user; //usuario encontrado
+  }*/
+  //
+  //return user;
 }
 
 //Función para iniciar sesión y generación de token para autenticación:

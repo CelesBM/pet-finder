@@ -1,4 +1,5 @@
 const API_BASE_URL = "http://localhost:4000"; //luego process.env
+const MAPBOX_TOKEN = process.env.MAPBOX_TOKEN; //Crea una instancia del cliente de Mapbox con tu token
 
 const state = {
   data: {
@@ -153,13 +154,28 @@ const state = {
           fullname: currentState.fullname,
           localidad: currentState.localidad,
           userId: currentState.userId,
-          lat: currentState.userLat,
           long: currentState.userLong,
+          lat: currentState.userLat,
         }),
       });
       const data = await response.json();
       console.log("Dara de changePersonalData: ", data);
       //currentState.update = data;
+      this.setState(currentState);
+    }
+  },
+
+  async setGeoData(query: string) {
+    const currentState = this.getState();
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${MAPBOX_TOKEN}`
+    );
+    if (query.trim() !== "") {
+      const data = await response.json();
+      const [long, lat] = data.features[0].center;
+      currentState.userLong = long;
+      currentState.userLat = lat;
+      sessionStorage.setItem("user", JSON.stringify(currentState));
       this.setState(currentState);
     }
   },
