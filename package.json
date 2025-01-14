@@ -5,6 +5,7 @@
   "scripts": {
     "dev:fe": "parcel serve ./fe-src/index.html",
     "dev:be": "nodemon --watch ./be-src/index.ts --exec ts-node ./be-src/index.ts",
+    "alg": "nodemon --watch ./be-src/models/connection.ts --exec ts-node ./be-src/models/connection.ts",
     "build:fe": "parcel build ./fe-src/index.html --dist-dir ./dist",
     "build:be": "tsc",
     "build": "npm run build:fe && npm run build:be"

@@ -3,7 +3,9 @@ import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 import { Auth } from "../models/auth";
 import { User } from "../models/users";
-//import { userDataAlgolia } from "../models/connection";
+import { userDataAlgolia } from "../models/connection";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 type UserData = {
   fullname: string;
@@ -17,7 +19,7 @@ type AuthData = {
   password: string;
 };
 
-const secretCrypto = "HJAFDHNAJKFBWIE"; //mas adelante let secretCrypto = process.env.SECRET_CRYPTO;
+const secretCrypto = process.env.SECRET_CRYPTO; //"HJAFDHNAJKFBWIE";
 
 //Función para encriptamiento de contraseña, para un almacenamiento seguro:
 function getSHA256fromSTRING(text: string) {
@@ -48,10 +50,10 @@ export async function authUser(userData: UserData) {
       userId: user.get("id"),
     },
   });
-  //NUEVO VER ALGOLIA 13/1
-  /* if (created == true) {
-    const userAlgolia = await userDataAlgolia.saveObject({
-      objectId: user.get("id"),
+  //Guardar usuario en Algolia si fue creado exitosamente:
+  if (created) {
+    const algoliaResponse = await userDataAlgolia.saveObject({
+      objectID: user.get("id"), //objectID: user.get("id").toString(), // Algolia espera un string como objectID
       fullname,
       email,
       localidad,
@@ -59,9 +61,9 @@ export async function authUser(userData: UserData) {
     return user; //usuario creado
   } else {
     return user; //usuario encontrado
-  }*/
+  }
   //
-  //return user;
+  return user;
 }
 
 //Función para iniciar sesión y generación de token para autenticación:
@@ -84,7 +86,7 @@ export async function authToken(dataAuth: AuthData) {
     where: { id: auth.get("userId") },
   });
   if (user) {
-    const token = jwt.sign({ user }, secretCrypto); //genero un token para autenticación
+    const token = jwt.sign({ user }, secretCrypto as any); //genero un token para autenticación
     return { token: token };
   }
   return { error: "Error al generar el token." };
@@ -105,7 +107,7 @@ export function authMiddleware(
   }
   const token = authHeader.split(" ")[1]; //obtengo la posición del n° token (excluyendo bearer)
   try {
-    const data = jwt.verify(token, secretCrypto) as any; //verificación del token
+    const data = jwt.verify(token, secretCrypto as any) as any; //verificación del token
     req.userauth = data.user; //guarda los datos decodificados del token
     next(); //pasa el control al siguiente middleware
   } catch (error) {

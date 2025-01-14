@@ -42,12 +42,12 @@ app.use(
   })
 );
 
-//sequelize.sync({ force: true }).then(() => {
-//console.log("Base de datos sincronizada");
-app.listen(port, () => {
-  console.log("Listening on port", port);
+sequelize.sync({ force: true }).then(() => {
+  //console.log("Base de datos sincronizada");
+  app.listen(port, () => {
+    console.log("Listening on port", port);
+  });
 });
-//});
 
 app.post("/auth", async (req, res): Promise<void> => {
   try {
