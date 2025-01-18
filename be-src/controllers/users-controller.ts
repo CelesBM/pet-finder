@@ -5,19 +5,20 @@ type UserData = {
   fullname: string;
   userId: number;
   localidad: string;
-  long: number;
-  lat: number;
+  userLong: number;
+  userLat: number;
 };
 
 export async function updateUserData(userData: UserData) {
-  const { userId, localidad, fullname, long, lat } = userData;
-  const newData = { fullname, localidad, lat, long };
-  //const updateData = await User.update(newData, { where: { id: userId } });
+  const { userId, localidad, fullname, userLong, userLat } = userData;
+  const newData = { fullname, localidad, userLat, userLong };
+  console.log("Datos para actualizar en la base de datos:", newData);
   await User.update(newData, { where: { id: userId } });
   const updatedUser = await User.findOne({ where: { id: userId } });
   if (!updatedUser) {
     return "No se encuentra el usuario";
   }
+  console.log(newData);
   //NUEVO ALGOLIA 13/1
   try {
     const userAlgolia = await userDataAlgolia.partialUpdateObject({
@@ -25,8 +26,8 @@ export async function updateUserData(userData: UserData) {
       fullname,
       localidad,
       _geoloc: {
-        lat: lat,
-        long: long,
+        lat: userLat,
+        lng: userLong,
       },
     });
   } catch (error) {

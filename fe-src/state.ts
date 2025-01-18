@@ -1,5 +1,4 @@
 const API_BASE_URL = "http://localhost:4000"; //luego process.env
-const MAPBOX_TOKEN = process.env.MAPBOX_TOKEN; //Crea una instancia del cliente de Mapbox con tu token
 
 const state = {
   data: {
@@ -144,8 +143,16 @@ const state = {
     console.log("Estado después de login:", this.getState());
   },
 
+  //Agregar o modificar datos personales:
   async changePersonalData() {
     const currentState = this.getState();
+    console.log("Datos enviados al backend:", {
+      fullname: currentState.fullname,
+      localidad: currentState.localidad,
+      userLat: currentState.userLat,
+      userLong: currentState.userLong,
+      userId: currentState.userId,
+    });
     if (currentState.userId) {
       const response = await fetch(API_BASE_URL + "/update-personal", {
         method: "post",
@@ -154,29 +161,36 @@ const state = {
           fullname: currentState.fullname,
           localidad: currentState.localidad,
           userId: currentState.userId,
-          long: currentState.userLong,
-          lat: currentState.userLat,
+          userLat: currentState.userLat,
+          userLong: currentState.userLong,
         }),
       });
       const data = await response.json();
-      console.log("Dara de changePersonalData: ", data);
-      //currentState.update = data;
+      console.log("Data de changePersonalData: ", data);
       this.setState(currentState);
     }
   },
 
+  //Agregar las coordenadas de localidad:
   async setGeoData(query: string) {
     const currentState = this.getState();
+    //API de Nominatim para geocodificación:
     const response = await fetch(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${MAPBOX_TOKEN}`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`
     );
     if (query.trim() !== "") {
-      const data = await response.json();
-      const [long, lat] = data.features[0].center;
-      currentState.userLong = long;
-      currentState.userLat = lat;
-      sessionStorage.setItem("user", JSON.stringify(currentState));
-      this.setState(currentState);
+      const data = await response.json(); //verifica que la respuesta de Nominatim tenga datos
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0]; //extrae coordenadas
+        //Actualizar estado con coordenadas:
+        currentState.userLong = parseFloat(lon);
+        currentState.userLat = parseFloat(lat);
+        sessionStorage.setItem("user", JSON.stringify(currentState));
+        this.setState(currentState);
+        console.log("setgeodata:", currentState);
+      } else {
+        console.error("No se encontraron resultados para la búsqueda.");
+      }
     }
   },
 };

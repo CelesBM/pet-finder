@@ -11,7 +11,7 @@ export class PersonalData extends HTMLElement {
   }
   render() {
     const currentState = state.getState();
-    const name = currentState.name || "sin datos";
+    const name = currentState.fullname || "sin datos";
     const localidad = currentState.localidad || "sin datos";
     this.innerHTML = `
     <header-component></header-component>

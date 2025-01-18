@@ -154,16 +154,16 @@ export class EditPersonalData extends HTMLElement {
     const localidadEl = this.querySelector(".adress") as HTMLInputElement;
     const errorMessageEl = this.querySelector(".error-message") as HTMLElement;
 
-    buttonEl.addEventListener("click", (e) => {
+    buttonEl.addEventListener("click", async (e) => {
       e.preventDefault();
       if (nameEl.value && localidadEl.value !== "") {
         const currentState = state.getState();
         currentState.fullname = nameEl.value;
         currentState.localidad = localidadEl.value;
         state.setState(currentState);
-        //await state.setLongLatUser(currentState.localidad);
-        //await state.agregarDatos();
-        //Router.go("/");
+        await state.setGeoData(currentState.localidad);
+        await state.changePersonalData();
+        Router.go("/personal-data");
       } else {
         errorMessageEl.textContent = "Por favor, completa todos los campos.";
         errorMessageEl.style.display = "block";

@@ -53,7 +53,7 @@ export async function authUser(userData: UserData) {
   //Guardar usuario en Algolia si fue creado exitosamente:
   if (created) {
     const algoliaResponse = await userDataAlgolia.saveObject({
-      objectID: user.get("id"), //objectID: user.get("id").toString(), // Algolia espera un string como objectID
+      objectID: user.get("id"),
       fullname,
       email,
       localidad,

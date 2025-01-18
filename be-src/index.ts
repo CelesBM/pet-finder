@@ -108,6 +108,7 @@ app.post("/login", async (req: Request, res: Response) => {
 });
 
 app.post("/update-personal", async (req, res) => {
+  console.log("Cuerpo recibido en el backend:", req.body);
   try {
     if (req.body.userId) {
       const updatedUser = await updateUserData(req.body);
