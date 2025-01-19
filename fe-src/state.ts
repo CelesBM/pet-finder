@@ -11,6 +11,11 @@ const state = {
     localidad: "",
     userLat: "",
     userLong: "",
+    petData: "",
+    petId: "",
+    petName: "",
+    petImg: "",
+    petLocation: "",
   },
   listeners: [],
 
@@ -191,6 +196,30 @@ const state = {
       } else {
         console.error("No se encontraron resultados para la búsqueda.");
       }
+    }
+  },
+
+  //Crear un reporte de mascota perdida:
+  async createPet() {
+    const currentState = this.getState();
+    if (currentState.userId) {
+      const response = await fetch(API_BASE_URL + "/create-pet", {
+        method: "post",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: currentState.userId,
+          namePet: currentState.petName,
+          estadoPet: currentState.petEstado,
+          petImageUrl: currentState.urlPetImage,
+          petLat: currentState.petLat,
+          petLong: currentState.petLong,
+          petUbicacion: currentState.petNameUbi,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
     }
   },
 };

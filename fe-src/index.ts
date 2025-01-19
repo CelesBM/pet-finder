@@ -8,6 +8,7 @@ import "./pages/auth-register/index";
 import "./pages/info/index";
 import "./pages/personal-data/index";
 import "./pages/edit-personal-data/index";
+import "./pages/lost-pets/index";
 
 (function main() {
   initHeader();

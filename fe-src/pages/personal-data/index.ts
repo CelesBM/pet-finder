@@ -4,10 +4,10 @@ import { state } from "../../state";
 export class PersonalData extends HTMLElement {
   connectedCallback() {
     this.render();
-    /*const currentState = state.getState();
+    const currentState = state.getState();
     if (!currentState.userId) {
       Router.go("/login");
-    }*/
+    }
   }
   render() {
     const currentState = state.getState();
