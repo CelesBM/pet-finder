@@ -123,7 +123,6 @@ export class AuthRegister extends HTMLElement {
           }
       }
 
-
       button{
       background-color: #799ab5;
       font-size: 15px;
@@ -147,8 +146,6 @@ export class AuthRegister extends HTMLElement {
        font-style: bold;
        font-size: 20px;
       }
-
-
     </style>
        `;
 
@@ -163,7 +160,7 @@ export class AuthRegister extends HTMLElement {
       currentState.email = emailEl.value;
       currentState.password = passwordEl.value;
 
-      await state.signUp(); //crear usuario nuevo
+      await state.signUp(); //crea usuario nuevo
       if (currentState.errorMessage) {
         errorMessageEl.textContent = currentState.errorMessage;
         errorMessageEl.style.display = "block";

@@ -1,12 +1,7 @@
 import * as express from "express";
 import { Request, Response, NextFunction } from "express";
 import * as cors from "cors";
-import * as crypto from "crypto";
-import * as jwt from "jsonwebtoken";
 import * as path from "path";
-import { sequelize } from "./models/connection";
-import { User } from "./models/users";
-import { Auth } from "./models/auth";
 import {
   authUser,
   authToken,
@@ -15,11 +10,9 @@ import {
   loginUser,
 } from "./controllers/auth-controller";
 import { updateUserData } from "./controllers/users-controller";
-import { emitWarning } from "process";
 
 const app = express();
 const port = 4000; // luego agregar el process.env.PORT || 4000
-const SECRET = "HJAFDHNAJKFBWIE";
 
 //Middleware para configurar los headers para permitir CORS:
 app.use((req, res, next) => {
@@ -76,7 +69,6 @@ app.post("/auth/token", async (req, res): Promise<void> => {
   res.json(tokenResponse);
 });
 
-//antes era app.get
 app.use(
   "/me",
   authMiddleware,

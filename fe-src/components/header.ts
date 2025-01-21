@@ -180,31 +180,10 @@ export function initHeader() {
           Router.go("/personal-data");
         });
 
-        /*  divEl.querySelector(".menu-login")?.addEventListener("click", () => {
-          if (currentState.isLoggedIn === false) {
-            state.setState({ ...currentState, isLoggedIn: false });
-            this.render();
-          } else {
-            Router.go("/login");
-          }
-        });*/
-
         overlayEl.querySelector(".menu-info")?.addEventListener("click", () => {
           Router.go("/personal-data");
           overlayEl.classList.remove("active");
         });
-
-        /*  overlayEl
-          .querySelector(".menu-login")
-          ?.addEventListener("click", () => {
-            if (currentState.isLoggedIn) {
-              state.setState({ ...currentState, isLoggedIn: false });
-              this.render();
-            } else {
-              Router.go("/login");
-            }
-            overlayEl.classList.remove("active");
-          });*/
 
         menuIcon.addEventListener("click", () => {
           overlayEl.classList.add("active");

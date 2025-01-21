@@ -123,7 +123,6 @@ export class AuthLogin extends HTMLElement {
           }
       }
 
-
       button{
       background-color: #799ab5;
       font-size: 15px;
@@ -183,4 +182,3 @@ export class AuthLogin extends HTMLElement {
 }
 
 customElements.define("login-page", AuthLogin);
-//NO ME FUNCIONA CUANDO LA CONTRASEÑA ESTA MAL, Y VER CUANDO NO ESTA REGISTRADO

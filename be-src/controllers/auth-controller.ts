@@ -19,7 +19,7 @@ type AuthData = {
   password: string;
 };
 
-const secretCrypto = process.env.SECRET_CRYPTO; //"HJAFDHNAJKFBWIE";
+const secretCrypto = process.env.SECRET_CRYPTO;
 
 //Función para encriptamiento de contraseña, para un almacenamiento seguro:
 function getSHA256fromSTRING(text: string) {
@@ -29,7 +29,7 @@ function getSHA256fromSTRING(text: string) {
 //Funcion para crear un nuevo usuario:
 export async function authUser(userData: UserData) {
   const { fullname, email, password, localidad } = userData;
-  const existingUser = await User.findOne({ where: { email } }); //verificar si el usuario ya existe
+  const existingUser = await User.findOne({ where: { email } }); //verifica si el usuario ya existe
   if (existingUser) {
     return "Este usuario ya está registrado, dirigirse a Iniciar Sesión.";
   }
@@ -62,8 +62,6 @@ export async function authUser(userData: UserData) {
   } else {
     return user; //usuario encontrado
   }
-  //
-  return user;
 }
 
 //Función para iniciar sesión y generación de token para autenticación:
@@ -72,9 +70,8 @@ export async function authToken(dataAuth: AuthData) {
   const auth = await Auth.findOne({
     where: { email },
   });
-  //Si el usuario no está registrado:
   if (!auth) {
-    return { error: "Usuario no registrado." };
+    return { error: "Usuario no registrado." }; //verifica si el usuario no está registrado
   }
   const authPassword = auth.get("password"); //accedo a la contraseña con el método get de Sequelize
   //Verificación de contraseña correcta o incorrecta:
@@ -127,6 +124,7 @@ export async function getUser(request: Request & { user?: any }) {
   }
 }
 
+//Función para iniciar sesión:
 export async function loginUser(dataAuth: AuthData) {
   const { email, password } = dataAuth;
   if (!email || !password) {
@@ -140,13 +138,11 @@ export async function loginUser(dataAuth: AuthData) {
   if (auth.get("password") !== hashedPassword) {
     throw new Error("Contraseña incorrecta."); //verificar la contraseña
   }
-
   // Buscar datos del usuario en la tabla User
   const user = await User.findOne({ where: { id: auth.get("userId") } });
   if (!user) {
     throw new Error("No se encontró el usuario asociado.");
   }
-
   return {
     message: "Autenticación exitosa.",
     user: {

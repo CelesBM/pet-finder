@@ -120,7 +120,6 @@ export class EditPersonalData extends HTMLElement {
           }
       }
 
-
       button{
       background-color: #799ab5;
       font-size: 15px;
@@ -144,8 +143,6 @@ export class EditPersonalData extends HTMLElement {
        font-style: bold;
        font-size: 20px;
       }
-
-
     </style>
        `;
 

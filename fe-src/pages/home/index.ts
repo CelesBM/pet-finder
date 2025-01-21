@@ -100,7 +100,6 @@ export class Home extends HTMLElement {
     font-style: bold;
     font-size: 18px;
     }
-
     </style>
        `;
 

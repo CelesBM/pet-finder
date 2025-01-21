@@ -19,7 +19,7 @@ export async function updateUserData(userData: UserData) {
     return "No se encuentra el usuario";
   }
   console.log(newData);
-  //NUEVO ALGOLIA 13/1
+  //Modifica datos en algolia:
   try {
     const userAlgolia = await userDataAlgolia.partialUpdateObject({
       objectID: updatedUser.get("id"),
@@ -33,7 +33,6 @@ export async function updateUserData(userData: UserData) {
   } catch (error) {
     return error;
   }
-  //TERMINA NUEVO ALGOLIA
   if (updatedUser) {
     return updatedUser;
   } else {

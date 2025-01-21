@@ -40,7 +40,6 @@ const state = {
           method: "post",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            //fullname: currentState.fullname,
             email: currentState.email,
             password: currentState.password,
           }),
@@ -53,7 +52,6 @@ const state = {
         }
         currentState.userId = data.id;
         currentState.email = data.email;
-        //currentState.fullname = data.fullname;
         currentState.errorMessage = ""; //vacía errorMessage
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
