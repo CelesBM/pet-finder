@@ -16,6 +16,7 @@
     "@types/node": "^22.10.2",
     "@vaadin/router": "^1.7.5",
     "algoliasearch": "4.x.x",
+    "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.4.7",

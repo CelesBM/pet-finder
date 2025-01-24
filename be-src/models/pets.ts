@@ -5,12 +5,12 @@ export class Pet extends Model {}
 
 Pet.init(
   {
-    name: DataTypes.STRING,
-    imgURL: DataTypes.STRING,
-    state: DataTypes.STRING,
-    lat: DataTypes.DECIMAL,
-    long: DataTypes.DECIMAL,
-    location: DataTypes.STRING,
+    petName: DataTypes.STRING,
+    petImgURL: DataTypes.STRING,
+    petState: DataTypes.STRING,
+    petLat: DataTypes.DECIMAL,
+    petLong: DataTypes.DECIMAL,
+    petLocation: DataTypes.STRING,
   },
 
   { sequelize, modelName: "pet" }

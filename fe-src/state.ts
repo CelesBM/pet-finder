@@ -14,7 +14,7 @@ const state = {
     petData: "",
     petId: "",
     petName: "",
-    petImg: "",
+    petImgURL: "",
     petLocation: "",
   },
   listeners: [],

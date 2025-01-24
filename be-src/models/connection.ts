@@ -1,4 +1,5 @@
 import { Error, Sequelize } from "sequelize";
+import { v2 as cloudinary } from "cloudinary";
 import algoliasearch from "algoliasearch";
 import * as pg from "pg";
 import * as dotenv from "dotenv";
@@ -24,9 +25,6 @@ const client = algoliasearch(
 export const userDataAlgolia = client.initIndex("users");
 export const petDataAlgolia = client.initIndex("pets");
 
-/*
-import { v2 as cloudinary } from "cloudinary";
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -34,7 +32,6 @@ cloudinary.config({
 });
 
 export { cloudinary };
-*/
 
 sequelize
   .authenticate()
