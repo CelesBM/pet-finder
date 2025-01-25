@@ -1,208 +1,176 @@
 import { Router } from "@vaadin/router";
-//import { state } from "../../state";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { state } from "../../state";
 
 export class CreateReport extends HTMLElement {
   connectedCallback() {
-    // const myState = state.getState();
-    // if (!myState.userId) {
-    //   Router.go("/login");
-    // } else {
     this.render();
-    // }
   }
+
   render() {
-    //  const currentState = state.getState();
-
     this.innerHTML = `
-    <header-component></header-component>
-    <div class="report-container">
+      <header-component></header-component>
+      <div class="report-container">
         <div class="report">
-            <h1>Reportar mascota</h1>
-            <h3>Ingresá los siguientes datos para poder reportar la mascota.</h3>
-        </div > 
+          <h1>Reportar mascota</h1>
+          <h3>Ingresá los siguientes datos para poder reportar la mascota.</h3>
+        </div>
         <form class="form">      
-            <label for="name">NOMBRE DE MASCOTA:</label>
-            <input type="text" id="name" class="name" name="name" autocomplete="name" required>
-            <img class="dropzone" src="https://res.cloudinary.com/dkzmrfgus/image/upload/v1715798301/pet-finder/reports/gdiqwa4ttphpeuaarxzw.png" alt="">
-            <button class="button-add">Agregar foto</button>
-            <img class="map" src="https://png.pngtree.com/png-vector/20190628/ourlarge/pngtree-map-illustration-with-markers-png-image_1519483.jpg" alt="">
-            <p>Buscá un punto de referencia para reportar la mascota. Por ejemplo, la ubicación donde lo viste por última vez.</p>
-            <label for="location">UBICACION:</label>
-            <input type="text" id="location" class="location" name="location" autocomplete="location" required>
-            <button class="button-report">Reportar</button>
-            <button class="button-cancel">Cancelar</button>
+          <label for="name">NOMBRE DE MASCOTA:</label>
+          <input type="text" id="name" class="name" name="name" autocomplete="name" required>
+          <div class="map"></div>
+          <p>Hacé clic en el mapa para seleccionar la ubicación donde viste la mascota por última vez.</p>
+          <label for="location">UBICACIÓN:</label>
+          <input type="text" id="location" class="location" name="location" autocomplete="location" required>
+          <button class="button-report">Reportar</button>
+          <button class="button-cancel">Cancelar</button>
         </form>
-      </div >  
+      </div>  
 
-    <style>
-      .report-container {
-      padding: 60px 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      }
+      <style>
+        .report-container {
+          padding: 60px 30px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
 
-      .report{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      }
-
-      h3{
-      color:rgb(68, 101, 128);
-      font-size: 20px;
-      text-align: center;
-      }
-
-         @media (min-width: 768px) {
-          h3 {
-          font-size: 28px;
-          }
-         }
-
-      .form{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin-top: 30px;
-      gap: 10px;
-      }
-
-         @media (min-width: 768px) {
-          .form{
+        .report {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
           gap: 20px;
-          }
-      }
+        }
 
-      label{
-      font-size: 20px;
-      }
-
-        @media (min-width: 768px) {
-          label{
-          font-size: 22px;
-          }
-      }
-
-      @media (min-width: 1085px) {
-          label{
-          font-size: 24px;
-          }
-      }
-
-      input{
-      font-size: 15px;
-      height: 40px; 
-      width: 260px;
-      border-radius: 0.2rem;
-      padding: 10px;
-      }
-
-    @media (min-width: 500px) {
-          input {
-          width: 350px;
-          }
-      }
-
-           @media (min-width: 768px) {
-         input {
-          width: 500px;
-          }
-      }
-
-    @media (min-width: 1085px) {
-          input {
-          font-size: 18px;         
-          width: 600px;
-          height: 50px; 
-          }
-      }
-
-      img{
-      height: 200px;
-      border-radius: 0.2rem;
-      }
-
-       @media (min-width: 500px) {
-          img {
-          height: 230px;
-          }
-      }
-
-            @media (min-width: 768px) {
-           img {
-          font-size: 22px;
-          }
-      }
-
-      button{
-      background-color: #799ab5;
-      font-size: 15px;
-      height: 40px; 
-      width: 250px;
-      border-radius: 0.2rem;
-      cursor: pointer;
-      }
-
-         @media (min-width: 500px) {
-          button {
-          width: 350px;
-          }
-      }
-
-          @media (min-width: 768px) {
-          button {
-         font-size: 20px;
-          width: 400px;
-          }
-      }
-
-      @media (min-width: 1085px) {
-          button {
+        h3 {
+          color: rgb(68, 101, 128);
           font-size: 20px;
-          height: 50px; 
-          width: 400px;
-          }
-      }
+          text-align: center;
+        }
 
-      p{
-      color:rgb(68, 101, 128);
-      font-size: 18px;
-      text-align: center;
-      }
+        .form {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin-top: 30px;
+          gap: 20px;
+        }
 
-               @media (min-width: 768px) {
-         p {
+        label {
           font-size: 20px;
-          }
-      }
+        }
 
-      .map{
-      width: 250px;
-      }
+        input {
+          font-size: 15px;
+          height: 40px; 
+          width: 260px;
+          border-radius: 0.2rem;
+          padding: 10px;
+        }
 
-         @media (min-width: 500px) {
-          .map {
-          width: 350px;
-          }
-      }
-
-           @media (min-width: 768px) {
-          .map {
-          width: 400px;
+        .map {
+          width: 100%;
           height: 300px;
-          }
+          border-radius: 0.2rem;
+          margin-bottom: 10px;
+        }
+
+        button {
+          background-color: #799ab5;
+          font-size: 15px;
+          height: 40px; 
+          width: 250px;
+          border-radius: 0.2rem;
+          cursor: pointer;
+        }
+
+        .button-report {
+          margin-top: 30px;
+        }
+
+        p {
+          color: rgb(68, 101, 128);
+          font-size: 18px;
+          text-align: center;
+        }
+      </style>
+    `;
+
+    const buttonReportEl = this.querySelector(
+      ".button-report"
+    ) as HTMLButtonElement;
+    const buttonCancelEl = this.querySelector(
+      ".button-cancel"
+    ) as HTMLButtonElement;
+    const nameInput = this.querySelector(".name") as HTMLInputElement;
+    const locationInput = this.querySelector(".location") as HTMLInputElement;
+
+    buttonReportEl.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const currentState = state.getState();
+      currentState.petName = nameInput.value;
+      currentState.petState = "perdido";
+      currentState.petLocation = locationInput.value;
+      state.setState(currentState);
+      await state.createReport();
+      // Router.go("/mascota-reportada");
+    });
+
+    buttonCancelEl.addEventListener("click", (e) => {
+      e.preventDefault();
+      // Router.go("/mascotas-perdidas");
+    });
+
+    this.initMap();
+  }
+
+  initMap() {
+    const mapContainer = this.querySelector(".map") as HTMLElement;
+    const currentState = state.getState();
+
+    const map = L.map(mapContainer).setView([-34.603851, -58.381775], 13); // Obelisco, Buenos Aires
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+    }).addTo(map);
+
+    let marker: L.Marker | null = null;
+
+    // Evento para capturar clic en el mapa
+    map.on("click", (e) => {
+      const { lat, lng } = e.latlng;
+
+      if (marker) {
+        marker.setLatLng([lat, lng]);
+      } else {
+        marker = L.marker([lat, lng]).addTo(map);
       }
 
-      .button-report{
-      margin-top: 30px;
+      currentState.petLat = lat;
+      currentState.petLong = lng;
+      state.setState(currentState);
+
+      console.log("Mapa clickeado. Ubicación actual:", { lat, lng });
+    });
+
+    // Centra el mapa en la ubicación del usuario si se permite
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        map.setView([latitude, longitude], 15);
+        L.marker([latitude, longitude]).addTo(map);
+        currentState.petLat = latitude;
+        currentState.petLong = longitude;
+        state.setState(currentState);
+      },
+      (error) => {
+        console.error("Error obteniendo la ubicación:", error);
       }
-    </style>
-       `;
+    );
   }
 }
 

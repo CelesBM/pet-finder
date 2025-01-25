@@ -180,6 +180,12 @@ export function initHeader() {
           Router.go("/personal-data");
         });
 
+        divEl
+          .querySelector(".menu-new-report")
+          ?.addEventListener("click", () => {
+            Router.go("/create-report");
+          });
+
         overlayEl.querySelector(".menu-info")?.addEventListener("click", () => {
           Router.go("/personal-data");
           overlayEl.classList.remove("active");

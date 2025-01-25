@@ -16,6 +16,7 @@ const state = {
     petName: "",
     petImgURL: "",
     petLocation: "",
+    petState: "",
   },
   listeners: [],
 
@@ -198,26 +199,24 @@ const state = {
   },
 
   //Crear un reporte de mascota perdida:
-  async createPet() {
+  async createReport() {
     const currentState = this.getState();
     if (currentState.userId) {
-      const response = await fetch(API_BASE_URL + "/create-pet", {
+      const response = await fetch(API_BASE_URL + "/create-report", {
         method: "post",
-        headers: {
-          "content-type": "application/json",
-        },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
           userId: currentState.userId,
-          namePet: currentState.petName,
-          estadoPet: currentState.petEstado,
-          petImageUrl: currentState.urlPetImage,
+          petName: currentState.petName,
+          petState: currentState.petState,
+          petImgURL: currentState.petImgURL,
           petLat: currentState.petLat,
           petLong: currentState.petLong,
-          petUbicacion: currentState.petNameUbi,
+          petLocation: currentState.petLocation,
         }),
       });
       const data = await response.json();
-      console.log(data);
+      console.log("create report:", data);
     }
   },
 };
