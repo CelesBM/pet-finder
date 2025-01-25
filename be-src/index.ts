@@ -1,4 +1,5 @@
 import * as express from "express";
+import { sequelize } from "./models/connection";
 import { Request, Response, NextFunction } from "express";
 import * as cors from "cors";
 import * as path from "path";
@@ -10,6 +11,7 @@ import {
   loginUser,
 } from "./controllers/auth-controller";
 import { updateUserData } from "./controllers/users-controller";
+import { createReport, getAllPets } from "./controllers/pet-controllers";
 
 const app = express();
 const port = 4000; // luego agregar el process.env.PORT || 4000
@@ -36,7 +38,7 @@ app.use(
 );
 
 //sequelize.sync({ force: true }).then(() => {
-//console.log("Base de datos sincronizada");
+//  console.log("Base de datos sincronizada");
 app.listen(port, () => {
   console.log("Listening on port", port);
 });
@@ -110,6 +112,25 @@ app.post("/update-personal", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+app.post("/create-report", async (req, res) => {
+  if (req.body.userId) {
+    const newReport = await createReport(req.body);
+    res.json(newReport);
+  } else {
+    res.status(400).json("Faltan datos");
+  }
+});
+
+app.get("/pets", async (req, res) => {
+  const userId = parseInt(req.query.userId as string, 10);
+  if (req.query.userId) {
+    const myPets = await getAllPets(req, userId);
+    res.json(myPets);
+  } else {
+    res.status(400).json("Falta la query válida de userId");
   }
 });
 

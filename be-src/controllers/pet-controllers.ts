@@ -1,7 +1,17 @@
+import { Request, Response, NextFunction } from "express";
 import { Pet, User } from "../associations/index";
 import { petDataAlgolia } from "../models/connection";
 
-export async function createReport(userPet) {
+type userPet = {
+  userId: number;
+  petName: string;
+  petState: string;
+  petLat: number;
+  petLong: number;
+  petLocation: string;
+};
+
+export async function createReport(userPet: userPet) {
   //const { userId, petName, petImgURL, petState, petLat, petLong, petLocation } = userPet; CUANDO TENGA LO DE CLOUDINARY
   const { userId, petName, petState, petLat, petLong, petLocation } = userPet;
   //
@@ -37,5 +47,14 @@ export async function createReport(userPet) {
     } catch (error) {
       return error;
     }
+  }
+}
+
+export async function getAllPets(req: Request, userId: number) {
+  try {
+    const allPets = await Pet.findAll({ where: { userId } });
+    return allPets;
+  } catch (error) {
+    return error;
   }
 }

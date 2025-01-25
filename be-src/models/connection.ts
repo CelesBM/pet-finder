@@ -26,9 +26,9 @@ export const userDataAlgolia = client.initIndex("users");
 export const petDataAlgolia = client.initIndex("pets");
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: "ddaw8l94t", //luego process.env
+  api_key: "148175273248443", //luego process.env
+  api_secret: "MLgVqAAbXX5mAX6jS1L-EyFDAEE", //luego process.env
 });
 
 export { cloudinary };
