@@ -1,7 +1,8 @@
 import { Router } from "@vaadin/router";
+import { state } from "../../state";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { state } from "../../state";
+import Dropzone from "dropzone";
 
 export class CreateReport extends HTMLElement {
   connectedCallback() {
@@ -19,10 +20,15 @@ export class CreateReport extends HTMLElement {
         <form class="form">      
           <label for="name">NOMBRE DE MASCOTA:</label>
           <input type="text" id="name" class="name" name="name" autocomplete="name" required>
+          <p>Adjuntar foto</p>
+          <img class="dropzone" src="https://res.cloudinary.com/dkzmrfgus/image/upload/v1715798301/pet-finder/reports/gdiqwa4ttphpeuaarxzw.png" alt="">
           <div class="map"></div>
-          <p>Hacé clic en el mapa para seleccionar la ubicación donde viste la mascota por última vez.</p>
+          <p>Hacé clic en el mapa para seleccionar la ubicación donde viste la mascota por última vez o escribí la dirección</p>
           <label for="location">UBICACIÓN:</label>
-          <input type="text" id="location" class="location" name="location" autocomplete="location" required>
+          <div class="search-container">
+            <input type="text" id="location" class="location" name="location" autocomplete="location" required>
+            <button type="button" class="button-search">Buscar</button>
+          </div>
           <button class="button-report">Reportar</button>
           <button class="button-cancel">Cancelar</button>
         </form>
@@ -79,6 +85,14 @@ export class CreateReport extends HTMLElement {
           margin-bottom: 10px;
         }
 
+        .search-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
         button {
           background-color: #799ab5;
           font-size: 15px;
@@ -86,10 +100,6 @@ export class CreateReport extends HTMLElement {
           width: 250px;
           border-radius: 0.2rem;
           cursor: pointer;
-        }
-
-        .button-report {
-          margin-top: 30px;
         }
 
         p {
@@ -106,6 +116,9 @@ export class CreateReport extends HTMLElement {
     const buttonCancelEl = this.querySelector(
       ".button-cancel"
     ) as HTMLButtonElement;
+    const buttonSearchEl = this.querySelector(
+      ".button-search"
+    ) as HTMLButtonElement;
     const nameInput = this.querySelector(".name") as HTMLInputElement;
     const locationInput = this.querySelector(".location") as HTMLInputElement;
 
@@ -113,51 +126,93 @@ export class CreateReport extends HTMLElement {
       e.preventDefault();
       const currentState = state.getState();
       currentState.petName = nameInput.value;
-      currentState.petState = "perdido";
+      currentState.petState = "lost";
       currentState.petLocation = locationInput.value;
+      if (currentState.petImgURL) {
+        currentState.petImgURL = currentState.petImgURL;
+      }
+
       state.setState(currentState);
       await state.createReport();
-      // Router.go("/mascota-reportada");
+      Router.go("/lost-pets");
     });
 
     buttonCancelEl.addEventListener("click", (e) => {
       e.preventDefault();
-      // Router.go("/mascotas-perdidas");
+      Router.go("/lost-pets");
     });
 
+    buttonSearchEl.addEventListener("click", (e) => {
+      e.preventDefault();
+      const query = locationInput.value.trim();
+      if (query) {
+        this.searchLocation(query);
+      }
+    });
+
+    this.useDropzone();
     this.initMap();
+  }
+
+  useDropzone() {
+    const imgDropzoneEl = this.querySelector(".dropzone") as HTMLImageElement;
+    let imgURL;
+    const myDropzone = new Dropzone(".dropzone", {
+      url: "/falsa",
+      autoProcessQueue: false,
+    });
+
+    myDropzone.on("thumbnail", function (file) {
+      if (file.size > 5000000) {
+        // Limita el tamaño a 5 MB
+        alert(
+          "El archivo es demasiado grande. El tamaño máximo permitido es 5 MB."
+        );
+        myDropzone.removeFile(file);
+      } else {
+        const imgText = file.dataURL;
+        const currentState = state.getState();
+        imgURL = imgText;
+        imgDropzoneEl.src = imgURL;
+        currentState.petImgURL = imgURL;
+        state.setState(currentState);
+      }
+    });
+
+    myDropzone.on("addedfile", function () {
+      myDropzone.processQueue();
+    });
   }
 
   initMap() {
     const mapContainer = this.querySelector(".map") as HTMLElement;
     const currentState = state.getState();
+    if (currentState.mapInstance) {
+      return;
+    }
 
     const map = L.map(mapContainer).setView([-34.603851, -58.381775], 13); // Obelisco, Buenos Aires
-
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
     }).addTo(map);
 
     let marker: L.Marker | null = null;
+    currentState.mapInstance = map;
+    state.setState(currentState);
 
-    // Evento para capturar clic en el mapa
     map.on("click", (e) => {
       const { lat, lng } = e.latlng;
-
       if (marker) {
         marker.setLatLng([lat, lng]);
       } else {
         marker = L.marker([lat, lng]).addTo(map);
       }
-
       currentState.petLat = lat;
       currentState.petLong = lng;
       state.setState(currentState);
-
-      console.log("Mapa clickeado. Ubicación actual:", { lat, lng });
+      this.reverseGeocode(lat, lng);
     });
 
-    // Centra el mapa en la ubicación del usuario si se permite
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -171,6 +226,54 @@ export class CreateReport extends HTMLElement {
         console.error("Error obteniendo la ubicación:", error);
       }
     );
+  }
+
+  reverseGeocode(lat: number, lon: number) {
+    fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`
+    )
+      .then((resp) => resp.json())
+      .then((data) => {
+        const location = data?.address?.road
+          ? `${data.address.road}, ${data.address.city}, ${data.address.country}`
+          : "Ubicación desconocida";
+        const locationInput = this.querySelector(
+          ".location"
+        ) as HTMLInputElement;
+        locationInput.value = location;
+        const currentState = state.getState();
+        currentState.petLocation = location;
+        state.setState(currentState);
+      })
+      .catch((error) => {
+        console.error("Error en la geocodificación inversa:", error);
+      });
+  }
+
+  searchLocation(query: string) {
+    const currentState = state.getState();
+    fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`
+    )
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (data.length > 0) {
+          const { lat, lon } = data[0];
+          if (currentState.mapInstance) {
+            currentState.mapInstance.setView([lat, lon], 15);
+            L.marker([lat, lon]).addTo(currentState.mapInstance);
+            currentState.petLat = parseFloat(lat);
+            currentState.petLong = parseFloat(lon);
+            state.setState(currentState);
+            this.reverseGeocode(lat, lon);
+          }
+        } else {
+          console.error("No se encontraron resultados para la búsqueda.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error en la búsqueda de ubicación:", error);
+      });
   }
 }
 

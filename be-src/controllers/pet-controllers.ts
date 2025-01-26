@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { Pet, User } from "../associations/index";
-import { petDataAlgolia } from "../models/connection";
+import { petDataAlgolia, cloudinary } from "../models/connection";
 
 type userPet = {
   userId: number;
   petName: string;
+  petImgURL: string;
   petState: string;
   petLat: number;
   petLong: number;
@@ -12,19 +13,16 @@ type userPet = {
 };
 
 export async function createReport(userPet: userPet) {
-  //const { userId, petName, petImgURL, petState, petLat, petLong, petLocation } = userPet; CUANDO TENGA LO DE CLOUDINARY
-  const { userId, petName, petState, petLat, petLong, petLocation } = userPet;
-  //
-  // const image = await cloudinary.uploader.upload(petImageUrl);
-  // const urlImage = image.secure_url;
-  //
+  const { userId, petName, petImgURL, petState, petLat, petLong, petLocation } =
+    userPet;
+  const img = await cloudinary.uploader.upload(petImgURL); //datos de la imagen cargada
+  const imgURL = img.secure_url; //URL de la imagen
   const user = await User.findOne({ where: { id: userId } });
-  //Si encuentra al usuario:
   if (user) {
     const pet = await Pet.create({
       userId: user.get("id"),
       petName,
-      // petImageUrl: urlImage,
+      petImgURL: imgURL,
       petState,
       petLat,
       petLong,
@@ -34,7 +32,7 @@ export async function createReport(userPet: userPet) {
       const petAlgolia = await petDataAlgolia.saveObject({
         objectID: pet.get("id"),
         petName,
-        //petImageUrl: urlImage,
+        petImgURL: imgURL,
         petState,
         _geoloc: {
           lat: petLat,
