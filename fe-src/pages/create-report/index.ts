@@ -20,15 +20,16 @@ export class CreateReport extends HTMLElement {
         <form class="form">      
           <label for="name">NOMBRE DE MASCOTA:</label>
           <input type="text" id="name" class="name" name="name" autocomplete="name" required>
-          <p>Adjuntar foto</p>
+          <p>Adjunte la foto de la mascota</p>
           <img class="dropzone" src="https://res.cloudinary.com/dkzmrfgus/image/upload/v1715798301/pet-finder/reports/gdiqwa4ttphpeuaarxzw.png" alt="">
           <div class="map"></div>
-          <p>Hacé clic en el mapa para seleccionar la ubicación donde viste la mascota por última vez o escribí la dirección</p>
+          <p>Hacé clic en el mapa para seleccionar la ubicación donde viste la mascota por última vez o escribí la dirección.</p>
           <label for="location">UBICACIÓN:</label>
           <div class="search-container">
             <input type="text" id="location" class="location" name="location" autocomplete="location" required>
             <button type="button" class="button-search">Buscar</button>
           </div>
+          <p class="error-message" style="color: red; display: none;"></p>
           <button class="button-report">Reportar</button>
           <button class="button-cancel">Cancelar</button>
         </form>
@@ -51,11 +52,28 @@ export class CreateReport extends HTMLElement {
           gap: 20px;
         }
 
+          h1{
+        font-size: 40px;
+        }
+
+          @media (min-width: 1085px) {
+          h1 {
+          font-size: 50px;
+          }
+      }
+
         h3 {
           color: rgb(68, 101, 128);
           font-size: 20px;
           text-align: center;
         }
+
+      @media (min-width: 1085px) {
+          h3 {
+          font-size: 27px;
+          margin-bottom: 25px;
+          }
+      }
 
         .form {
           display: flex;
@@ -70,12 +88,52 @@ export class CreateReport extends HTMLElement {
           font-size: 20px;
         }
 
+         @media (min-width: 1085px) {
+          label  {
+          font-size: 25px;
+          }
+      }
+
+
         input {
           font-size: 15px;
           height: 40px; 
           width: 260px;
           border-radius: 0.2rem;
           padding: 10px;
+        }
+
+           @media (min-width: 1085px) {
+            input {
+              width: 600px;
+              height: 55px;
+            }
+        }
+
+
+         @media (min-width: 600px) {
+            .name {
+              width: 400px;
+            }
+        }
+
+          @media (min-width: 1085px) {
+            .name {
+              width: 800px;
+              height: 55px;
+            }
+        }
+
+        .dropzone{
+        width: 250px;
+        border-radius: 0.2rem;
+        cursor:pointer;
+        }
+
+          @media (min-width: 600px) {
+            .dropzone {
+              width: 400px;
+            }
         }
 
         .map {
@@ -102,11 +160,26 @@ export class CreateReport extends HTMLElement {
           cursor: pointer;
         }
 
+               @media (min-width: 1085px) {
+            button {
+              font-size: 20px;
+              width: 300px;
+              height: 55px;
+            }
+        }
+
         p {
           color: rgb(68, 101, 128);
           font-size: 18px;
           text-align: center;
         }
+
+               @media (min-width: 1085px) {
+           p {
+               font-size: 22px;
+            }
+        }
+
       </style>
     `;
 
@@ -121,6 +194,7 @@ export class CreateReport extends HTMLElement {
     ) as HTMLButtonElement;
     const nameInput = this.querySelector(".name") as HTMLInputElement;
     const locationInput = this.querySelector(".location") as HTMLInputElement;
+    const errorMessageEl = this.querySelector(".error-message") as HTMLElement;
 
     buttonReportEl.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -130,6 +204,11 @@ export class CreateReport extends HTMLElement {
       currentState.petLocation = locationInput.value;
       if (currentState.petImgURL) {
         currentState.petImgURL = currentState.petImgURL;
+      }
+      if (!nameInput.value || !locationInput.value) {
+        errorMessageEl.textContent = "Por favor, completa todos los campos.";
+        errorMessageEl.style.display = "block";
+        return;
       }
 
       state.setState(currentState);
@@ -187,8 +266,10 @@ export class CreateReport extends HTMLElement {
   initMap() {
     const mapContainer = this.querySelector(".map") as HTMLElement;
     const currentState = state.getState();
+
+    // Si ya existe una instancia del mapa, destrúyela.
     if (currentState.mapInstance) {
-      return;
+      currentState.mapInstance.remove(); // Esto destruye el mapa actual.
     }
 
     const map = L.map(mapContainer).setView([-34.603851, -58.381775], 13); // Obelisco, Buenos Aires
@@ -198,7 +279,7 @@ export class CreateReport extends HTMLElement {
 
     let marker: L.Marker | null = null;
     currentState.mapInstance = map;
-    state.setState(currentState);
+    state.setState(currentState); // Guardamos la nueva instancia del mapa en el estado
 
     map.on("click", (e) => {
       const { lat, lng } = e.latlng;
