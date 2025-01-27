@@ -1,4 +1,5 @@
 import { Router } from "@vaadin/router";
+import { state } from "../../state";
 
 export class Home extends HTMLElement {
   connectedCallback() {
@@ -16,7 +17,7 @@ export class Home extends HTMLElement {
         <button class="instructions">Cómo funciona Pet Finder?</button>
         <div class="login">
           <a class="go-login" href="#">Iniciar sesión</a>
-          <a class="go-register"href="#">Registrarse</a>
+          <a class="go-register" href="#">Registrarse</a>
         </div>
       </div>    
     </div>   
@@ -104,19 +105,33 @@ export class Home extends HTMLElement {
        `;
 
     const loginEl = this.querySelector(".go-login") as HTMLElement;
+    const registerEl = this.querySelector(".go-register") as HTMLElement;
+    const instructionsEl = this.querySelector(".instructions") as HTMLElement;
+    const locationEl = this.querySelector(".location") as HTMLElement;
+    const myState = state.getState();
+
     loginEl.addEventListener("click", (e) => {
       e.preventDefault();
       Router.go("/login");
     });
-    const registerEl = this.querySelector(".go-register") as HTMLElement;
+
     registerEl.addEventListener("click", (e) => {
       e.preventDefault();
       Router.go("/register");
     });
-    const instructionsEl = this.querySelector(".instructions") as HTMLElement;
+
     instructionsEl.addEventListener("click", (e) => {
       e.preventDefault();
       Router.go("/info");
+    });
+
+    locationEl.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!myState.userId) {
+        Router.go("/login");
+      } else {
+        Router.go("/personal-data");
+      }
     });
   }
 }

@@ -14,5 +14,6 @@ window.addEventListener("load", () => {
     { path: "/edit-personal", component: "edit-personaldata-page" },
     { path: "/lost-pets", component: "lostpets-page" },
     { path: "/create-report", component: "create-report-page" },
+    { path: "/my-reports", component: "myreports-page" },
   ]);
 });

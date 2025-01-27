@@ -97,17 +97,17 @@ export class Info extends HTMLElement {
     </style>
        `;
 
-    const loginEl = this.querySelector(".go-login") as HTMLButtonElement;
-    const registerEl = this.querySelector(".go-register") as HTMLButtonElement;
+    const locationEl = this.querySelector(".location") as HTMLButtonElement;
+    const reportEl = this.querySelector(".report") as HTMLButtonElement;
 
-    loginEl.addEventListener("click", (e) => {
+    locationEl.addEventListener("click", (e) => {
       e.preventDefault();
-      Router.go("/login");
+      Router.go("/personal-data");
     });
 
-    registerEl.addEventListener("click", (e) => {
+    reportEl.addEventListener("click", (e) => {
       e.preventDefault();
-      Router.go("/register");
+      Router.go("/create-report");
     });
   }
 }

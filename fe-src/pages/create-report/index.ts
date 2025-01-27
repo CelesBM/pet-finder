@@ -6,7 +6,12 @@ import Dropzone from "dropzone";
 
 export class CreateReport extends HTMLElement {
   connectedCallback() {
-    this.render();
+    const myState = state.getState();
+    if (!myState.userId) {
+      Router.go("/login");
+    } else {
+      this.render();
+    }
   }
 
   render() {

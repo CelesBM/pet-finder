@@ -219,6 +219,18 @@ const state = {
       console.log("create report:", data);
     }
   },
+
+  async myReports() {
+    const currentState = this.getState();
+    if (currentState.userId) {
+      const response = await fetch(
+        API_BASE_URL + "/pets?userId=" + currentState.userId
+      );
+      const data = await response.json();
+      currentState.petData = data;
+      this.setState(currentState);
+    }
+  },
 };
 
 export function initializeApp() {

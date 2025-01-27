@@ -28,7 +28,8 @@ export function initHeader() {
             </div>  
             <div class="menu">
                 <li class="menu-info">Mis datos</li>
-                <li class="menu-reports">Mis mascotas reportadas</li>
+                <li class="menu-near">Reportes cercanos</li>
+                <li class="menu-reports">Mis reportes</li>
                 <li class="menu-new-report">Reportar mascota</li>
                 <li class="menu-login">${loginText}</li>
             </div>    
@@ -37,7 +38,8 @@ export function initHeader() {
             <div class="close-button">✖</div>
             <ul class="overlay-menu">
                 <li class="menu-info">Mis datos</li>
-                <li class="menu-reports">Mis mascotas reportadas</li>
+                <li class="menu-near">Reportes cercanos</li>
+                <li class="menu-reports">Mis reportes</li>
                 <li class="menu-new-report">Reportar mascota</li>
                 <li class="menu-login">${loginText}</li>
             </ul>
@@ -105,7 +107,7 @@ export function initHeader() {
 
         .menu{
         color: #013867;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: bold;
         display: flex;
         align-items: center;
@@ -121,6 +123,7 @@ export function initHeader() {
         @media (min-width: 1085px) {
             .menu {
              font-size: 24px;
+             gap: 50px;
             }
         }
         
@@ -185,6 +188,10 @@ export function initHeader() {
           ?.addEventListener("click", () => {
             Router.go("/create-report");
           });
+
+        divEl.querySelector(".menu-reports")?.addEventListener("click", () => {
+          Router.go("/my-reports");
+        });
 
         overlayEl.querySelector(".menu-info")?.addEventListener("click", () => {
           Router.go("/personal-data");
