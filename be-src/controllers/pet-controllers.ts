@@ -56,3 +56,13 @@ export async function getAllPets(req: Request, userId: number) {
     return error;
   }
 }
+
+export async function deletePet(id: number) {
+  try {
+    const pet = await Pet.destroy({ where: { id } });
+    const petAlgolia = await petDataAlgolia.deleteObject(id.toString());
+    return pet;
+  } catch (error) {
+    return error;
+  }
+}

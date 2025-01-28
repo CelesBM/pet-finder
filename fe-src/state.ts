@@ -231,6 +231,21 @@ const state = {
       this.setState(currentState);
     }
   },
+
+  async deleteReport() {
+    const currentState = this.getState();
+    if (!currentState.petId) {
+      console.error("No hay un petId definido en el estado.");
+      return;
+    }
+    const response = await fetch(API_BASE_URL + "/delete-report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: currentState.petId }),
+    });
+    const data = await response.json();
+    console.log(data);
+  },
 };
 
 export function initializeApp() {

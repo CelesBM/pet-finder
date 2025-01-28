@@ -27,8 +27,8 @@ export class MyReports extends HTMLElement {
               <h5>${pet.petLocation}</h5>
             </div>
               <div class="button-container">
-                <button class="edit-button">Editar</button>
-                <button class="delete-button">Eliminar</button>
+                <button class="edit-button" data-id="${pet.id}">Editar</button>
+                <button class="delete-button" data-id="${pet.id}">Eliminar</button>
               </div>
         </div>
     `;
@@ -259,16 +259,47 @@ export class MyReports extends HTMLElement {
     const editButtonEl = this.querySelector(
       ".edit-button"
     ) as HTMLButtonElement;
-    const deleteButtonEl = this.querySelector(
-      ".delete-button"
-    ) as HTMLButtonElement;
     const reportButtonEl = this.querySelector(
       ".report-button"
     ) as HTMLButtonElement;
 
-    reportButtonEl.addEventListener("click", (e) => {
+    if (reportButtonEl) {
+      reportButtonEl.addEventListener("click", (e) => {
+        e.preventDefault();
+        Router.go("/create-report");
+      });
+    }
+
+    /*deleteButtonEl.addEventListener("click", async (e) => {
       e.preventDefault();
-      Router.go("/create-report");
+      await state.deleteReport();
+      console.log("Se elimino el reporte");
+    });
+*/
+    const deleteButton = this.querySelectorAll(".delete-button");
+    deleteButton.forEach((button) => {
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const target = e.target as HTMLButtonElement;
+        const petId = target.dataset.id;
+        if (petId) {
+          const currentState = state.getState();
+          currentState.petId = parseInt(petId); //actualiza el estado con el id seleccionado
+          state.setState(currentState);
+          try {
+            await state.deleteReport();
+            console.log("Se eliminó el reporte con ID:", petId);
+            const petContainer = target.closest(".pet-container");
+            if (petContainer) {
+              petContainer.remove();
+            }
+          } catch (error) {
+            console.error("Hubo un error al eliminar el reporte:", error);
+          }
+        } else {
+          console.error("No se encontró el ID de la mascota para eliminar.");
+        }
+      });
     });
   }
 }

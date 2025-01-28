@@ -12,7 +12,11 @@ import {
   loginUser,
 } from "./controllers/auth-controller";
 import { updateUserData } from "./controllers/users-controller";
-import { createReport, getAllPets } from "./controllers/pet-controllers";
+import {
+  createReport,
+  getAllPets,
+  deletePet,
+} from "./controllers/pet-controllers";
 
 const app = express();
 const port = 4000; // luego agregar el process.env.PORT || 4000
@@ -134,6 +138,15 @@ app.get("/pets", async (req, res) => {
     res.json(myPets);
   } else {
     res.status(400).json("Falta la query válida de userId");
+  }
+});
+
+app.post("/delete-report", async (req, res) => {
+  if (req.body.id) {
+    const pet = await deletePet(req.body.id);
+    res.status(200).json("Mascota eliminada correctamente");
+  } else {
+    res.status(400).json("Falta id de mascota");
   }
 });
 
