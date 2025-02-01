@@ -15,6 +15,7 @@ import { updateUserData } from "./controllers/users-controller";
 import {
   createReport,
   getAllPets,
+  updateReport,
   deletePet,
 } from "./controllers/pet-controllers";
 
@@ -138,6 +139,15 @@ app.get("/pets", async (req, res) => {
     res.json(myPets);
   } else {
     res.status(400).json("Falta la query válida de userId");
+  }
+});
+
+app.post("/edit-report", async (req, res) => {
+  if (req.body.id) {
+    const petUpdated = await updateReport(req.body);
+    res.json(petUpdated);
+  } else {
+    res.status(400).json("Falta id de mascota");
   }
 });
 

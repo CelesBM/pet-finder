@@ -232,6 +232,25 @@ const state = {
     }
   },
 
+  async updateReport() {
+    const currentState = this.getState();
+    if (currentState.idPet) {
+      const response = await fetch(API_BASE_URL + "/edit-report", {
+        method: "post",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          id: currentState.petId,
+          petName: currentState.petName,
+          petState: currentState.petState,
+          petImgURL: currentState.petImgURL,
+          petLat: currentState.petLat,
+          petLong: currentState.petLong,
+          petLocation: currentState.petLocation,
+        }),
+      });
+    }
+  },
+
   async deleteReport() {
     const currentState = this.getState();
     if (!currentState.petId) {

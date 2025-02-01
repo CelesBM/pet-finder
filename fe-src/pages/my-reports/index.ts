@@ -13,7 +13,7 @@ export class MyReports extends HTMLElement {
   async render() {
     await state.myReports();
     const currentState = state.getState();
-    const petsArray = currentState.petData;
+    const petsArray = currentState.petData || [];
     let content = "";
 
     if (petsArray) {
@@ -256,9 +256,6 @@ export class MyReports extends HTMLElement {
     </style>
        `;
 
-    const editButtonEl = this.querySelector(
-      ".edit-button"
-    ) as HTMLButtonElement;
     const reportButtonEl = this.querySelector(
       ".report-button"
     ) as HTMLButtonElement;
@@ -270,12 +267,41 @@ export class MyReports extends HTMLElement {
       });
     }
 
-    /*deleteButtonEl.addEventListener("click", async (e) => {
-      e.preventDefault();
-      await state.deleteReport();
-      console.log("Se elimino el reporte");
+    const editButtons = this.querySelectorAll(".edit-button");
+    editButtons.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = e.target as HTMLButtonElement;
+        console.log("target", target);
+        const petId = target.dataset.id;
+        console.log("petid", petId);
+
+        if (petId) {
+          const currentState = state.getState();
+          const selectedPet = currentState.petData.find(
+            (pet) => pet.id === parseInt(petId)
+          );
+
+          console.log("selectedpet", selectedPet);
+          // Guardamos todos los datos en el state
+          if (selectedPet) {
+            currentState.petId = parseInt(petId);
+            currentState.petName = selectedPet.petName;
+            currentState.petLocation = selectedPet.petLocation;
+            currentState.petImgURL = selectedPet.petImgURL;
+            currentState.petState = selectedPet.petState;
+            currentState.petLat = selectedPet.petLat;
+            currentState.petLong = selectedPet.petLong;
+
+            state.setState(currentState);
+            Router.go("/edit-report");
+          } else {
+            console.error("No se encontró el reporte para editar.");
+          }
+        }
+      });
     });
-*/
+
     const deleteButton = this.querySelectorAll(".delete-button");
     deleteButton.forEach((button) => {
       button.addEventListener("click", async (e) => {

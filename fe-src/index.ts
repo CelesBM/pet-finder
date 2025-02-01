@@ -9,6 +9,7 @@ import "./pages/info/index";
 import "./pages/personal-data/index";
 import "./pages/edit-personal-data/index";
 import "./pages/create-report/index";
+import "./pages/edit-report/index";
 import "./pages/my-reports/index";
 
 (function main() {
