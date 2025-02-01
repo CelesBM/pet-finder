@@ -16,7 +16,7 @@ export class EditReport extends HTMLElement {
 
   render() {
     const currentState = state.getState();
-    const petId = Number(currentState.petId); // Convertimos a número por si acaso
+    const petId = Number(currentState.petId); //convierto a número
     const selected = currentState.petData.find((pet) => pet.id === petId);
 
     this.innerHTML = `
@@ -197,34 +197,15 @@ export class EditReport extends HTMLElement {
 
     //Para que se autocompleten los datos según el id seleccionado para editar:
     if (selected && nameInput && locationInput && imgDropzoneEl) {
-      nameInput.value = selected.petName || ""; //value="${selected.petName}"
+      nameInput.value = selected.petName || "";
       locationInput.value = selected.petLocation || "";
       imgDropzoneEl.src =
         selected.petImgURL ||
         "https://img.freepik.com/vector-gratis/ups-error-404-ilustracion-concepto-robot-roto_114360-5529.jpg";
     }
 
-    // Llamamos a la carga de datos después de renderizar
-    // this.loadReportData();
-    this.addEventListeners(); // Agregamos los event listeners
+    this.addEventListeners();
   }
-
-  /*async loadReportData() {
-    const currentState = state.getState();
-    const petId = currentState.petId; // Asegúrate de que petId esté en el estado
-
-    const selectedPet = currentState.petData.find((pet) => pet.id === petId);
-
-    const nameInput = this.querySelector(".name") as HTMLInputElement;
-    const locationInput = this.querySelector(".location") as HTMLInputElement;
-    const imgDropzoneEl = this.querySelector(".dropzone") as HTMLImageElement;
-
-    if (selectedPet && nameInput && locationInput && imgDropzoneEl) {
-      nameInput.value = selectedPet.petName || "";
-      locationInput.value = selectedPet.petLocation || "";
-      imgDropzoneEl.src = selectedPet.petImgURL || "URL_POR_DEFECTO"; // Asegúrate de que la URL de la imagen sea válida
-    }
-  }*/
 
   addEventListeners() {
     const buttonReportEl = this.querySelector(
@@ -249,11 +230,13 @@ export class EditReport extends HTMLElement {
         errorMessageEl.style.display = "block";
         return;
       }
+
       currentState.petName = nameInput.value;
       currentState.petLocation = locationInput.value;
       state.setState(currentState);
+
       try {
-        await state.updateReport();
+        await state.editReport();
         Router.go("/my-reports");
       } catch (error) {
         console.error("Error al actualizar el reporte:", error);
@@ -287,7 +270,7 @@ export class EditReport extends HTMLElement {
 
     myDropzone.on("thumbnail", function (file) {
       if (file.size > 5000000) {
-        // Limita el tamaño a 5 MB
+        //Limita el tamaño a 5 MB
         alert(
           "El archivo es demasiado grande. El tamaño máximo permitido es 5 MB."
         );
@@ -310,22 +293,18 @@ export class EditReport extends HTMLElement {
   initMap() {
     const mapContainer = this.querySelector(".map") as HTMLElement;
     const currentState = state.getState();
-
-    // Si ya existe una instancia del mapa, destrúyela para evitar conflictos
+    // Si ya existe una instancia del mapa, se remueve:
     if (currentState.mapInstance) {
       currentState.mapInstance.remove();
     }
-
-    // Inicializar el mapa centrado en Buenos Aires por defecto
+    //Inicializar el mapa centrado en Buenos Aires por defecto
     const map = L.map(mapContainer).setView([-34.603851, -58.381775], 13);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
     }).addTo(map);
-
     let marker: L.Marker | null = null;
     currentState.mapInstance = map;
-
-    // Si existen coordenadas en el estado, las usamos para posicionar el marcador
+    // Si existen coordenadas en el estado, las usamos para posicionar el marcador:
     if (
       currentState.petLat !== undefined &&
       currentState.petLong !== undefined
@@ -347,7 +326,7 @@ export class EditReport extends HTMLElement {
       console.error("No hay coordenadas disponibles en el estado.");
     }
 
-    // Manejar clics en el mapa para actualizar la ubicación
+    //Manejar clics en el mapa para actualizar la ubicación:
     map.on("click", (e) => {
       if (!isNaN(e.latlng.lat) && !isNaN(e.latlng.lng)) {
         if (marker) {
@@ -356,10 +335,10 @@ export class EditReport extends HTMLElement {
           marker = L.marker(e.latlng).addTo(map);
         }
 
-        // Guardar nueva ubicación en el estado
+        //Guardar nueva ubicación en el estado:
         const currentState = state.getState();
-        currentState.petLat = e.latlng.lat;
-        currentState.petLong = e.latlng.lng;
+        currentState.petLat = parseFloat(e.latlng.lat.toString()); //número
+        currentState.petLong = parseFloat(e.latlng.lng.toString()); //número
         state.setState(currentState);
 
         console.log(
@@ -372,30 +351,6 @@ export class EditReport extends HTMLElement {
       }
     });
   }
-
-  /*async searchLocation(query: string) {
-    try {
-      const currentState = state.getState();
-  
-      // Llamamos a la función setGeoData en lugar de hacer la solicitud directamente
-      await state.setGeoData(query);
-  
-      // Después de actualizar el estado, podemos verificar si tenemos coordenadas válidas
-      if (currentState.userLat && currentState.userLong) {
-        // Actualizamos el estado con las nuevas coordenadas
-        const { userLat, userLong } = currentState;
-  
-        // Llamamos a initMap para actualizar el marcador
-        this.initMap();
-      } else {
-        console.error("No se encontraron coordenadas válidas.");
-        alert("No se encontraron coordenadas para la dirección ingresada.");
-      }
-    } catch (error) {
-      console.error("Error al obtener la ubicación:", error);
-      alert("Hubo un problema al buscar la dirección.");
-    }
-  }*/
 
   reverseGeocode(lat: number, lon: number) {
     fetch(

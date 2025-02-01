@@ -114,7 +114,7 @@ app.post("/update-personal", async (req, res) => {
   try {
     if (req.body.userId) {
       const updatedUser = await updateUserData(req.body);
-      res.json(updatedUser); //devuelve datos actualizados
+      res.json(updatedUser);
     } else {
       res.status(400).json({ error: "No se registra userId" });
     }
@@ -145,6 +145,7 @@ app.get("/pets", async (req, res) => {
 app.post("/edit-report", async (req, res) => {
   if (req.body.id) {
     const petUpdated = await updateReport(req.body);
+    console.log(petUpdated);
     res.json(petUpdated);
   } else {
     res.status(400).json("Falta id de mascota");

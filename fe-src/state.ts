@@ -220,6 +220,7 @@ const state = {
     }
   },
 
+  //Obtener los reportes que hizo mi usuario:
   async myReports() {
     const currentState = this.getState();
     if (currentState.userId) {
@@ -232,22 +233,38 @@ const state = {
     }
   },
 
-  async updateReport() {
+  //Editar datos de mascota reportada:
+  async editReport() {
     const currentState = this.getState();
-    if (currentState.idPet) {
+    if (currentState.petId) {
+      const petLat = parseFloat(currentState.petLat); //convertir las coordenadas a números
+      const petLong = parseFloat(currentState.petLong); //convertir las coordenadas a números
       const response = await fetch(API_BASE_URL + "/edit-report", {
         method: "post",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           id: currentState.petId,
+          userId: currentState.userId,
           petName: currentState.petName,
           petState: currentState.petState,
           petImgURL: currentState.petImgURL,
-          petLat: currentState.petLat,
-          petLong: currentState.petLong,
+          petLat: petLat, //uso valores numéricos
+          petLong: petLong, //uso valores numéricos
           petLocation: currentState.petLocation,
         }),
       });
+      const data = await response.json();
+      currentState.petData = data;
+      this.setState(currentState);
+
+      /*if (data.message) {
+        console.log("Mensaje del servidor:", data.message);
+        if (data.pet) {
+          console.log("Mascota actualizada:", data.pet);
+        }
+      } else {
+        console.error("Respuesta del servidor inesperada:", data);
+      }*/ //Funciona todo ok.
     }
   },
 
