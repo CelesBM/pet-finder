@@ -8,8 +8,8 @@ User.init(
     fullname: { type: DataTypes.STRING },
     email: { type: DataTypes.STRING },
     localidad: { type: DataTypes.STRING },
-    lat: { type: DataTypes.DECIMAL },
-    long: { type: DataTypes.DECIMAL },
+    userLat: { type: DataTypes.DECIMAL },
+    userLong: { type: DataTypes.DECIMAL },
   },
   { sequelize, modelName: "user" }
 );

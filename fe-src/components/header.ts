@@ -189,6 +189,10 @@ export function initHeader() {
             Router.go("/create-report");
           });
 
+        divEl.querySelector(".menu-near")?.addEventListener("click", () => {
+          Router.go("/lost-pets");
+        });
+
         divEl.querySelector(".menu-reports")?.addEventListener("click", () => {
           Router.go("/my-reports");
         });

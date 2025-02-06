@@ -159,6 +159,7 @@ export class EditPersonalData extends HTMLElement {
         currentState.localidad = localidadEl.value;
         state.setState(currentState);
         await state.setGeoData(currentState.localidad);
+        const newState = state.getState();
         await state.changePersonalData();
         Router.go("/personal-data");
       } else {

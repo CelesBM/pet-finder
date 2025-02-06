@@ -218,12 +218,12 @@ export class CreateReport extends HTMLElement {
 
       state.setState(currentState);
       await state.createReport();
-      Router.go("/lost-pets");
+      Router.go("/my-reports");
     });
 
     buttonCancelEl.addEventListener("click", (e) => {
       e.preventDefault();
-      Router.go("/lost-pets");
+      Router.go("/my-reports");
     });
 
     buttonSearchEl.addEventListener("click", (e) => {
