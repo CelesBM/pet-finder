@@ -136,3 +136,26 @@ export async function deletePet(id: number) {
     return error;
   }
 }
+
+export async function nearbyPets(req: Request) {
+  const { lng, lat } = req.query;
+  try {
+    const pet = await petDataAlgolia.search("", {
+      aroundLatLng: `${lat} , ${lng}`,
+      aroundRadius: 20000, //20km
+    });
+    const petFound = pet.hits.map((hit: any) => {
+      return {
+        objectID: hit.objectID,
+        petName: hit.petName,
+        petImgURL: hit.petImgURL,
+        _geoloc: hit._geoloc,
+        userId: hit.userId,
+        petLocation: hit.petLocation,
+      };
+    });
+    return petFound;
+  } catch (error) {
+    return error;
+  }
+}

@@ -17,6 +17,7 @@ import {
   getAllPets,
   updateReport,
   deletePet,
+  nearbyPets,
 } from "./controllers/pet-controllers";
 
 const app = express();
@@ -158,6 +159,15 @@ app.post("/delete-report", async (req, res) => {
     res.status(200).json("Mascota eliminada correctamente");
   } else {
     res.status(400).json("Falta id de mascota");
+  }
+});
+
+app.get("/nearby-pets", async (req, res) => {
+  if (req.query.lng && req.query.lat) {
+    const response = await nearbyPets(req);
+    res.json(response);
+  } else {
+    res.status(400).json("Faltan datos");
   }
 });
 
