@@ -178,6 +178,7 @@ export function initHeader() {
           ".close-button"
         ) as HTMLButtonElement;
         const imgEl = shadow.querySelector(".map-img") as HTMLImageElement;
+        const loginEl = divEl.querySelector(".menu-login") as HTMLDivElement;
 
         divEl.querySelector(".menu-info")?.addEventListener("click", () => {
           Router.go("/personal-data");
@@ -213,6 +214,45 @@ export function initHeader() {
         imgEl.addEventListener("click", (e) => {
           e.preventDefault();
           Router.go("/home");
+        });
+
+        loginEl.addEventListener("click", (e) => {
+          e.preventDefault();
+          const currentState = state.getState();
+
+          if (currentState.isLoggedIn) {
+            state.SignOut();
+            Router.go("/home");
+          } else {
+            Router.go("/login");
+          }
+        });
+
+        //Funcionalidad menú hamburguesa:
+        const overlayMenuLinks = overlayEl.querySelectorAll("li");
+        overlayMenuLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            const target = e.target as HTMLElement;
+            if (target.classList.contains("menu-info")) {
+              Router.go("/personal-data");
+            } else if (target.classList.contains("menu-near")) {
+              Router.go("/lost-pets");
+            } else if (target.classList.contains("menu-reports")) {
+              Router.go("/my-reports");
+            } else if (target.classList.contains("menu-new-report")) {
+              Router.go("/create-report");
+            } else if (target.classList.contains("menu-login")) {
+              e.preventDefault();
+              const currentState = state.getState();
+              if (currentState.isLoggedIn) {
+                state.SignOut();
+                Router.go("/home");
+              } else {
+                Router.go("/login");
+              }
+            }
+            overlayEl.classList.remove("active");
+          });
         });
       }
     }

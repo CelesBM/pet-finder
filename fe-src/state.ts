@@ -135,8 +135,8 @@ const state = {
       currentState.email = data.user.email || "Email no registrado";
       currentState.localidad = data.user.localidad || "Localidad no registrada";
       currentState.userId = data.user.id || "ID no registrado";
-      currentState.userLat = data.user.lat || null;
-      currentState.userLong = data.user.long || null;
+      currentState.userLat = data.user.userLat || null;
+      currentState.userLong = data.user.userLong || null;
       sessionStorage.setItem("user", JSON.stringify(currentState));
       this.setState(currentState);
     } catch (error) {
@@ -145,6 +145,20 @@ const state = {
       this.setState(currentState);
     }
     console.log("Estado después de login:", this.getState());
+  },
+
+  //Cerrar Sesión:
+  SignOut() {
+    const currentState = this.getState();
+    sessionStorage.removeItem("user");
+    currentState.isLoggedIn = false;
+    currentState.fullname = "";
+    currentState.email = "";
+    currentState.localidad = "";
+    currentState.userId = "";
+    currentState.userLat = "";
+    currentState.userLong = "";
+    this.setState(currentState);
   },
 
   //Agregar o modificar datos personales:
@@ -256,15 +270,6 @@ const state = {
       const data = await response.json();
       currentState.petData = data;
       this.setState(currentState);
-
-      /*if (data.message) {
-        console.log("Mensaje del servidor:", data.message);
-        if (data.pet) {
-          console.log("Mascota actualizada:", data.pet);
-        }
-      } else {
-        console.error("Respuesta del servidor inesperada:", data);
-      }*/ //Funciona todo ok.
     }
   },
 
@@ -281,6 +286,27 @@ const state = {
     });
     const data = await response.json();
     console.log(data);
+  },
+
+  async nearbyPets() {
+    const currentState = this.getState();
+    if (!currentState.userLat || !currentState.userLong) {
+      console.error("Latitud y longitud no definidas.");
+      return;
+    }
+    if (currentState.userId) {
+      const response = await fetch(
+        API_BASE_URL +
+          "/nearby-pets?&lat=" +
+          currentState.userLat +
+          "&lng=" +
+          currentState.userLong
+      );
+      const data = await response.json();
+      console.log("nearbypets:", data);
+      currentState.petData = data;
+      this.setState(currentState);
+    }
   },
 };
 
