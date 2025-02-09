@@ -16,9 +16,9 @@ export class LostPets extends HTMLElement {
     const arrayPets = currentState.petData;
     this.innerHTML = `
       <header-component></header-component>
-  
+       <h1>Mascotas perdidas en tu zona</h1>
       <div class="main-container">
-          <h1>Mascotas perdidas en tu zona</h1>
+          
   
           ${
             arrayPets.length > 0
@@ -77,7 +77,20 @@ export class LostPets extends HTMLElement {
 
         .main-container {
         padding: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
       }
+
+             @media (min-width: 1085px) {
+           .main-container {
+          gap: 50px;
+          }
+        }
+
 
    
 
@@ -96,24 +109,19 @@ export class LostPets extends HTMLElement {
       }
        
        img{
-       height: 150px; 
+       height: 120px; 
        border-radius: 0.2rem;
        }
 
-      @media (min-width: 768px) {
+      @media (min-width: 1085px) {
           img {
           height: 200px;
           }
       }
 
-      @media (min-width: 1085px) {
-          img {
-          height: 250px;
-          }
-      }
-
       h1{
       font-size: 25px;
+      margin-top: 30px;
       margin-bottom: 10px;
       text-align: center;
       }
@@ -121,10 +129,13 @@ export class LostPets extends HTMLElement {
       @media (min-width: 768px) {
           h1 {
           font-size: 35px;
+          margin-bottom: 30px;
           }
       }
 
       .pet-container{
+      width: 350px;
+      height: 300px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -132,12 +143,15 @@ export class LostPets extends HTMLElement {
       align-items: center;
       background-color: #013867;
       border-radius: 1rem;
-      padding: 20px 50px;
+      padding: 20px;
       }
 
-        @media (min-width: 768px) {
+        @media (min-width: 1085px) {
           .pet-container {
           padding: 40px 100px;
+          width: 450px;
+          height: 500px;
+          gap: 30px;
           }
       }
 
@@ -156,7 +170,7 @@ export class LostPets extends HTMLElement {
       text-align: center;
       }
 
-         @media (min-width: 768px) {
+         @media (min-width: 1085px) {
           h3 {
           font-size: 28px;
           }
@@ -169,18 +183,12 @@ export class LostPets extends HTMLElement {
       margin-bottom: 0px;
       }
 
-         @media (min-width: 768px) {
+         @media (min-width: 1085px) {
           h5 {
           font-size: 26px;
           }
         }
 
-          @media (min-width: 1085px) {
-          h5 {
-          font-size: 27px;
-          margin-bottom: 25px;
-          }
-        }
 
       .report-button{
       background-color: #799ab5;
@@ -192,19 +200,11 @@ export class LostPets extends HTMLElement {
       cursor: pointer;
       }
 
-         @media (min-width: 768px) {
+         @media (min-width: 1085px) {
           .report-button {
           font-size: 20px;
           height: 40px; 
           width: 200px;
-          }
-        }
-
-          @media (min-width: 1085px) {
-          .report-button {
-          font-size: 20px;
-          height: 50px; 
-          width: 400px;
           }
         }
 
@@ -214,7 +214,7 @@ export class LostPets extends HTMLElement {
       margin-top: 100px;
       }
 
-       @media (min-width: 768px) {
+       @media (min-width: 1085px) {
           p {
           font-size: 25px;
           }

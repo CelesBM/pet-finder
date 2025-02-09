@@ -220,6 +220,8 @@ export class EditReport extends HTMLElement {
     const nameInput = this.querySelector(".name") as HTMLInputElement;
     const locationInput = this.querySelector(".location") as HTMLInputElement;
     const errorMessageEl = this.querySelector(".error-message") as HTMLElement;
+    const buttonFoundeEl = this.querySelector(".button-found") as HTMLElement;
+
     const buttonDeleteEl = this.querySelector(
       ".button-delete"
     ) as HTMLButtonElement;
@@ -259,6 +261,29 @@ export class EditReport extends HTMLElement {
       }
     });
 
+    buttonFoundeEl.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const currentState = state.getState();
+
+      try {
+        currentState.petState = "Encontrado";
+        await state.deleteReport();
+        alert("Nos alegramos que hayas encontrado a tu mascota!");
+
+        const petContainer = (e.target as HTMLElement).closest(
+          ".pet-container"
+        );
+        if (petContainer) {
+          petContainer.remove();
+        }
+
+        setTimeout(() => {
+          Router.go("/lost-pets");
+        }, 500);
+      } catch (error) {
+        console.error("Hubo un error al eliminar el reporte:", error);
+      }
+    });
     buttonDeleteEl.addEventListener("click", async (e) => {
       e.preventDefault();
       const currentState = state.getState();
