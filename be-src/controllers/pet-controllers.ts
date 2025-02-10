@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Pet, User } from "../associations/index";
+import { Pet, User, Report } from "../associations/index";
 import { petDataAlgolia, cloudinary } from "../models/connection";
 
 type userPet = {
@@ -11,6 +11,12 @@ type userPet = {
   petLat: number;
   petLong: number;
   petLocation: string;
+};
+
+type dataReport = {
+  reportName: string;
+  reportPhone: string;
+  reportAbout: string;
 };
 
 export async function createReport(userPet: userPet) {
@@ -155,6 +161,27 @@ export async function nearbyPets(req: Request) {
       };
     });
     return petFound;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function reportPet(dataReport: dataReport, id: number) {
+  const { reportName, reportPhone, reportAbout } = dataReport;
+  try {
+    const pet = await Pet.findOne({
+      where: { id },
+    });
+    if (!pet) {
+      throw new Error("Mascota no encontrada.");
+    }
+    const report = await Report.create({
+      reportName,
+      reportPhone,
+      reportAbout,
+      petId: pet.get("id"),
+    });
+    return report;
   } catch (error) {
     return error;
   }

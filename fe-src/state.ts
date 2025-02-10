@@ -17,6 +17,10 @@ const state = {
     petImgURL: "",
     petLocation: "",
     petState: "",
+    reportName: "",
+    reportPhone: "",
+    reportAbout: "",
+    reportData: "",
   },
   listeners: [],
 
@@ -306,6 +310,59 @@ const state = {
       console.log("nearbypets:", data);
       currentState.petData = data;
       this.setState(currentState);
+    }
+  },
+
+  //NOME RECONOCE PETID
+  async reportPet() {
+    const currentState = this.getState();
+    console.log("Estado antes de reportPet:", currentState);
+
+    if (currentState.petId) {
+      const response = await fetch(API_BASE_URL + "/report-pet", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          id: currentState.petId,
+          reportName: currentState.reportName,
+          reportPhone: currentState.reportPhone,
+          reportAbout: currentState.reportAbout,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("Respuesta del servidor en reportPet:", data);
+
+      currentState.reportData = data;
+      this.setState(currentState);
+    } else {
+      console.error("No hay petId en el estado, no se envía la petición");
+    }
+  },
+
+  async sendEmail() {
+    const currentState = this.getState();
+    console.log("Estado antes de sendEmail:", currentState);
+    const response = await fetch(API_BASE_URL + "/send-email", {
+      method: "post",
+      headers: {
+        Authorization: ` bearer ${currentState.token}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: currentState.reportEmail,
+        reportName: currentState.reportName,
+        reportPhone: currentState.reportPhone,
+        reportAbout: currentState.reportAbout,
+      }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error al enviar el correo:", errorData);
+    } else {
+      console.log("Correo enviado exitosamente");
+      const data = await response.json();
+      console.log(data);
     }
   },
 };

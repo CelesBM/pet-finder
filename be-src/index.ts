@@ -2,8 +2,10 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import { sequelize } from "./models/connection";
 import { Request, Response, NextFunction } from "express";
+import * as dotenv from "dotenv";
 import * as cors from "cors";
 import * as path from "path";
+import * as sgMail from "@sendgrid/mail";
 import {
   authUser,
   authToken,
@@ -18,7 +20,11 @@ import {
   updateReport,
   deletePet,
   nearbyPets,
+  reportPet,
 } from "./controllers/pet-controllers";
+
+dotenv.config();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
 const app = express();
 const port = 4000; // luego agregar el process.env.PORT || 4000
@@ -47,7 +53,7 @@ app.use(
 );
 
 //sequelize.sync({ force: true }).then(() => {
-//  console.log("Base de datos sincronizada");
+// console.log("Base de datos sincronizada");
 app.listen(port, () => {
   console.log("Listening on port", port);
 });
@@ -168,6 +174,38 @@ app.get("/nearby-pets", async (req, res) => {
     res.json(response);
   } else {
     res.status(400).json("Faltan datos");
+  }
+});
+
+app.post("/report-pet", async (req, res) => {
+  if (req.body.id) {
+    const report = await reportPet(req.body, req.body.id);
+    res.json(report);
+  } else {
+    res.status(400).json("Sin id en body");
+  }
+});
+
+app.post("/send-email", async (req, res) => {
+  console.log("Body recibido:", req.body); // <-- Agrega esto para ver qué llega
+  const { email, reportName, reportPhone, reportAbout } = req.body;
+  const msg = {
+    to: email,
+    from: "celestemonterodev@gmail.com",
+    subject: "Petfinder: han visto a tu mascota!",
+    text: `Vió a tu mascota: ${reportName}\nTeléfono: ${reportPhone}\nInformación sobre tu mascota: ${reportAbout}`,
+  };
+
+  try {
+    await sgMail.send(msg);
+    res.status(200).send({ message: "Correo enviado exitosamente" });
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+    const err = error as any;
+    res.status(500).send({
+      error: "Error al enviar el correo",
+      details: err?.response?.body?.errors || "No hay detalles disponibles",
+    });
   }
 });
 

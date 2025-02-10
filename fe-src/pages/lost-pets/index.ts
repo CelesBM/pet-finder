@@ -24,14 +24,16 @@ export class LostPets extends HTMLElement {
             arrayPets.length > 0
               ? arrayPets
                   .map(
-                    (pet) => `
+                    (pet) =>
+                      `
                     <div class="pet-container">
                         <img src="${pet.petImgURL}" />
                         <div class="info-pet">
                           <h3>${pet.petName}</h3>
                           <h5>${pet.petLocation}</h5>
                           <div class="data-pet">
-                            <button class="report-button" data-id="${pet.id}" data-name="${pet.petName}">Reportar</button>
+                           <button class="report-button" data-id="${pet.objectID}" data-name="${pet.petName}">Reportar</button>
+
                           </div>
                         </div>
                     </div>
@@ -90,7 +92,6 @@ export class LostPets extends HTMLElement {
           gap: 50px;
           }
         }
-
 
    
 
@@ -188,7 +189,6 @@ export class LostPets extends HTMLElement {
           font-size: 26px;
           }
         }
-
 
       .report-button{
       background-color: #799ab5;
@@ -344,11 +344,45 @@ export class LostPets extends HTMLElement {
 
     reportButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
+        const petId = button.getAttribute("data-id");
         const petName = button.getAttribute("data-name"); // Obtenemos el nombre de la mascota
         formTitle.textContent = `Reportar info de ${petName}`; // Cambiamos el título del form
         formEl.style.display = "flex"; // Mostramos el formulario
         overlayEl.style.display = "block"; // Mostramos el fondo borroso
+        currentState.petId = petId;
       });
+    });
+
+    formEl.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Capturar datos del formulario
+      const reportName = (document.querySelector(".name") as HTMLInputElement)
+        ?.value;
+      const reportPhone = (document.querySelector(".phone") as HTMLInputElement)
+        ?.value;
+      const reportAbout = (
+        document.querySelector(".location") as HTMLInputElement
+      )?.value;
+      const currentState = state.getState();
+      console.log("aver", currentState.petId);
+
+      // Actualizar el estado con los datos del formulario
+      state.setState({
+        ...state.getState(),
+
+        reportEmail: "celestemonterodev@gmail.com",
+        reportName,
+        reportPhone,
+        reportAbout,
+      });
+
+      // Llamar a la función para reportar la mascota
+      await state.reportPet();
+      await state.sendEmail();
+      alert("Reporte enviado con éxito!");
+      formEl.style.display = "none"; // Cerrar el formulario
+      overlayEl.style.display = "none"; // Ocultar el fondo borroso
     });
 
     // Manejo del botón de cierre
