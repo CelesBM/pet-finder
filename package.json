@@ -8,7 +8,7 @@
     "build:fe": "parcel build ./fe-src/index.html --dist-dir ./dist",
     "build:be": "tsc",
     "build": "npm run build:fe && npm run build:be",
-    "start": "node ./dist/index.js"
+    "start": "node ./be-dist/index.js"
   },
   "dependencies": {
     "@types/express": "^5.0.0",
