@@ -26,12 +26,16 @@ dotenv.config();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
 const app = express();
-const port = 4000; // luego agregar el process.env.PORT || 4000
+const port = process.env.PORT || 4000;
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 //Middleware para configurar los headers para permitir CORS:
 app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://pet-finder-icbc.onrender.com"
+  );
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS"
@@ -45,7 +49,7 @@ app.use(express.json());
 //Middleware para agregar los encabezados necesarios en las respuestas HTTP, para permitir solicitudes entre diferentes dominios:
 app.use(
   cors({
-    origin: "http://localhost:4000",
+    origin: ["http://localhost:4000", "https://pet-finder-icbc.onrender.com"],
     methods: "GET, POST, PUT, DELETE, OPTIONS",
     allowedHeaders: "Content-Type, Authorization",
   })
