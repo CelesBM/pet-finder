@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://pet-finder-icbc.onrender.com/";
+const API_BASE_URL = "https://pet-finder-icbc.onrender.com";
 const state = {
   data: {
     fullname: "",
