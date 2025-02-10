@@ -9,10 +9,11 @@ type UserData = {
   userLat: number;
 };
 
+//Función para actualizar la data personal del usuario:
 export async function updateUserData(userData: UserData) {
   const { userId, localidad, fullname, userLong, userLat } = userData;
   const newData = { fullname, localidad, userLat, userLong };
-  console.log("Datos para actualizar en la base de datos:", newData);
+  //console.log("Datos para actualizar en la base de datos:", newData);
   await User.update(newData, { where: { id: userId } });
   const updatedUser = await User.findOne({ where: { id: userId } });
   if (!updatedUser) {

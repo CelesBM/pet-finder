@@ -16,7 +16,7 @@ export class EditReport extends HTMLElement {
 
   render() {
     const currentState = state.getState();
-    const petId = Number(currentState.petId); //convierto a número
+    const petId = Number(currentState.petId);
     const selected = currentState.petData.find((pet) => pet.id === petId);
 
     this.innerHTML = `
@@ -284,6 +284,7 @@ export class EditReport extends HTMLElement {
         console.error("Hubo un error al eliminar el reporte:", error);
       }
     });
+
     buttonDeleteEl.addEventListener("click", async (e) => {
       e.preventDefault();
       const currentState = state.getState();
@@ -298,7 +299,7 @@ export class EditReport extends HTMLElement {
             petContainer.remove(); //eliminar el contenedor de la mascota
           }, 100);
         }
-        //Forzar la actualización de la vista en /lost-pets
+        //Forzar la actualización de la vista en /lost-pets:
         if (window.location.pathname === "/lost-pets") {
           Router.go("/lost-pets"); //recarga la página de lost-pets
         }
@@ -344,7 +345,7 @@ export class EditReport extends HTMLElement {
   initMap() {
     const mapContainer = this.querySelector(".map") as HTMLElement;
     const currentState = state.getState();
-    // Si ya existe una instancia del mapa, se remueve:
+    //Si ya existe una instancia del mapa, se remueve:
     if (currentState.mapInstance) {
       currentState.mapInstance.remove();
     }
@@ -355,7 +356,7 @@ export class EditReport extends HTMLElement {
     }).addTo(map);
     let marker: L.Marker | null = null;
     currentState.mapInstance = map;
-    // Si existen coordenadas en el estado, las usamos para posicionar el marcador:
+    //Si existen coordenadas en el estado, las usamos para posicionar el marcador:
     if (
       currentState.petLat !== undefined &&
       currentState.petLong !== undefined
@@ -391,12 +392,7 @@ export class EditReport extends HTMLElement {
         currentState.petLat = parseFloat(e.latlng.lat.toString()); //número
         currentState.petLong = parseFloat(e.latlng.lng.toString()); //número
         state.setState(currentState);
-
-        console.log(
-          "Nueva ubicación guardada:",
-          currentState.petLat,
-          currentState.petLong
-        );
+        //console.log("Nueva ubicación guardada:", currentState.petLat, currentState.petLong);
       } else {
         console.error("Ubicación inválida seleccionada:", e.latlng);
       }

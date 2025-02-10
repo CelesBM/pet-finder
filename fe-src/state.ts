@@ -51,7 +51,7 @@ const state = {
         });
         const data = await res.json();
         if (!res.ok) {
-          currentState.errorMessage = data.error || "Error desconocido"; //mensaje de error en el frontend según lo que devuelve el back
+          currentState.errorMessage = data.error || "Error desconocido";
           this.setState(currentState);
           return;
         }
@@ -60,7 +60,7 @@ const state = {
         currentState.errorMessage = ""; //vacía errorMessage
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
-        console.log(data);
+        //console.log(data);
       } catch (error) {
         console.error("Error en la solicitud:", error);
         currentState.errorMessage = "Error en la conexión con el servidor";
@@ -84,7 +84,7 @@ const state = {
         });
         const data = await res.json();
         if (!res.ok) {
-          currentState.errorMessage = data.error || "Error desconocido."; //mensaje de error en el frontend según lo que devuelve el back
+          currentState.errorMessage = data.error || "Error desconocido.";
           this.setState(currentState);
           return;
         }
@@ -95,7 +95,7 @@ const state = {
         currentState.errorMessage = "";
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
-        console.log("data autenticate", data);
+        //console.log("data autenticate", data);
       } catch (error) {
         console.error("Error en la autenticación:", error);
         currentState.errorMessage = "Error en la conexión con el servidor.";
@@ -126,15 +126,13 @@ const state = {
         },
       });
       const data = await res.json();
-      console.log(data);
-
+      //console.log(data);
       if (!res.ok) {
         currentState.errorMessage = data.error || "Error desconocido";
         this.setState(currentState);
         return;
       }
 
-      // Verificar datos obtenidos
       currentState.fullname = data.user.fullname || "Nombre no registrado";
       currentState.email = data.user.email || "Email no registrado";
       currentState.localidad = data.user.localidad || "Localidad no registrada";
@@ -148,7 +146,7 @@ const state = {
       currentState.errorMessage = "Error en la conexión con el servidor";
       this.setState(currentState);
     }
-    console.log("Estado después de login:", this.getState());
+    //console.log("Estado después de login:", this.getState());
   },
 
   //Cerrar Sesión:
@@ -168,13 +166,6 @@ const state = {
   //Agregar o modificar datos personales:
   async changePersonalData() {
     const currentState = this.getState();
-    console.log("Datos enviados al backend:", {
-      fullname: currentState.fullname,
-      localidad: currentState.localidad,
-      userLat: currentState.userLat,
-      userLong: currentState.userLong,
-      userId: currentState.userId,
-    });
     if (currentState.userId) {
       const response = await fetch(API_BASE_URL + "/update-personal", {
         method: "post",
@@ -188,7 +179,7 @@ const state = {
         }),
       });
       const data = await response.json();
-      console.log("Data de changePersonalData: ", data);
+      //console.log("Data de changePersonalData: ", data);
       this.setState(currentState);
     }
   },
@@ -209,7 +200,7 @@ const state = {
         currentState.userLat = parseFloat(lat);
         sessionStorage.setItem("user", JSON.stringify(currentState));
         this.setState(currentState);
-        console.log("setgeodata:", currentState);
+        //console.log("setgeodata:", currentState);
       } else {
         console.error("No se encontraron resultados para la búsqueda.");
       }
@@ -234,7 +225,7 @@ const state = {
         }),
       });
       const data = await response.json();
-      console.log("create report:", data);
+      //console.log("create report:", data);
     }
   },
 
@@ -277,6 +268,7 @@ const state = {
     }
   },
 
+  //Elimino mascota reportada:
   async deleteReport() {
     const currentState = this.getState();
     if (!currentState.petId) {
@@ -289,9 +281,10 @@ const state = {
       body: JSON.stringify({ id: currentState.petId }),
     });
     const data = await response.json();
-    console.log(data);
+    //console.log(data);
   },
 
+  //Mascotas cercanas:
   async nearbyPets() {
     const currentState = this.getState();
     if (!currentState.userLat || !currentState.userLong) {
@@ -307,17 +300,15 @@ const state = {
           currentState.userLong
       );
       const data = await response.json();
-      console.log("nearbypets:", data);
+      //console.log("nearbypets:", data);
       currentState.petData = data;
       this.setState(currentState);
     }
   },
 
-  //NOME RECONOCE PETID
+  //reportar mascota
   async reportPet() {
     const currentState = this.getState();
-    console.log("Estado antes de reportPet:", currentState);
-
     if (currentState.petId) {
       const response = await fetch(API_BASE_URL + "/report-pet", {
         method: "POST",
@@ -331,8 +322,7 @@ const state = {
       });
 
       const data = await response.json();
-      console.log("Respuesta del servidor en reportPet:", data);
-
+      //console.log("Respuesta del servidor en reportPet:", data);
       currentState.reportData = data;
       this.setState(currentState);
     } else {
@@ -340,9 +330,9 @@ const state = {
     }
   },
 
+  //Envío de email:
   async sendEmail() {
     const currentState = this.getState();
-    console.log("Estado antes de sendEmail:", currentState);
     const response = await fetch(API_BASE_URL + "/send-email", {
       method: "post",
       headers: {
@@ -360,9 +350,9 @@ const state = {
       const errorData = await response.json();
       console.error("Error al enviar el correo:", errorData);
     } else {
-      console.log("Correo enviado exitosamente");
+      //console.log("Correo enviado exitosamente");
       const data = await response.json();
-      console.log(data);
+      //console.log(data);
     }
   },
 };

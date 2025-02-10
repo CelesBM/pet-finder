@@ -166,7 +166,7 @@ export class AuthRegister extends HTMLElement {
         errorMessageEl.style.display = "block";
       } else {
         errorMessageEl.style.display = "none";
-        console.log("Cuenta creada con éxito");
+        //console.log("Cuenta creada con éxito");
         Router.go("/login");
       }
     });

@@ -104,7 +104,6 @@ export class MyReports extends HTMLElement {
             }
         }
 
-
       .pet-container{
       display: flex;
       flex-direction: column;
@@ -243,7 +242,6 @@ export class MyReports extends HTMLElement {
       border-radius: 0.2rem;
       cursor: pointer;
     }
-
     
          @media (min-width: 768px) {
           .report-button {
@@ -268,13 +266,12 @@ export class MyReports extends HTMLElement {
     }
 
     const editButtons = this.querySelectorAll(".edit-button");
+
     editButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
         e.preventDefault();
         const target = e.target as HTMLButtonElement;
-        console.log("target", target);
         const petId = target.dataset.id;
-        console.log("petid", petId);
 
         if (petId) {
           const currentState = state.getState();
@@ -282,8 +279,6 @@ export class MyReports extends HTMLElement {
             (pet) => pet.id === parseInt(petId)
           );
 
-          console.log("selectedpet", selectedPet);
-          // Guardamos todos los datos en el state
           if (selectedPet) {
             currentState.petId = parseInt(petId);
             currentState.petName = selectedPet.petName;
@@ -303,18 +298,20 @@ export class MyReports extends HTMLElement {
     });
 
     const deleteButton = this.querySelectorAll(".delete-button");
+
     deleteButton.forEach((button) => {
       button.addEventListener("click", async (e) => {
         e.preventDefault();
         const target = e.target as HTMLButtonElement;
         const petId = target.dataset.id;
+
         if (petId) {
           const currentState = state.getState();
-          currentState.petId = parseInt(petId); //actualiza el estado con el id seleccionado
+          currentState.petId = parseInt(petId);
           state.setState(currentState);
+
           try {
             await state.deleteReport();
-            console.log("Se eliminó el reporte con ID:", petId);
             const petContainer = target.closest(".pet-container");
             if (petContainer) {
               petContainer.remove();

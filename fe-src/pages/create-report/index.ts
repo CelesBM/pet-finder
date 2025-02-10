@@ -57,8 +57,8 @@ export class CreateReport extends HTMLElement {
           gap: 20px;
         }
 
-          h1{
-        font-size: 40px;
+        h1{
+          font-size: 40px;
         }
 
           @media (min-width: 1085px) {
@@ -73,7 +73,7 @@ export class CreateReport extends HTMLElement {
           text-align: center;
         }
 
-      @media (min-width: 1085px) {
+          @media (min-width: 1085px) {
           h3 {
           font-size: 27px;
           margin-bottom: 25px;
@@ -99,7 +99,6 @@ export class CreateReport extends HTMLElement {
           }
       }
 
-
         input {
           font-size: 15px;
           height: 40px; 
@@ -115,7 +114,6 @@ export class CreateReport extends HTMLElement {
             }
         }
 
-
          @media (min-width: 600px) {
             .name {
               width: 400px;
@@ -130,9 +128,9 @@ export class CreateReport extends HTMLElement {
         }
 
         .dropzone{
-        width: 250px;
-        border-radius: 0.2rem;
-        cursor:pointer;
+          width: 250px;
+          border-radius: 0.2rem;
+          cursor:pointer;
         }
 
           @media (min-width: 600px) {
@@ -180,10 +178,10 @@ export class CreateReport extends HTMLElement {
         }
 
                @media (min-width: 1085px) {
-           p {
+               p {
                font-size: 22px;
-            }
-        }
+               }
+             }
 
       </style>
     `;

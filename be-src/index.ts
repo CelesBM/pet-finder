@@ -1,7 +1,6 @@
 import * as express from "express";
-import * as bodyParser from "body-parser";
 import { sequelize } from "./models/connection";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import * as dotenv from "dotenv";
 import * as cors from "cors";
 import * as path from "path";
@@ -52,13 +51,14 @@ app.use(
   })
 );
 
-//sequelize.sync({ force: true }).then(() => {
-// console.log("Base de datos sincronizada");
+//sequelize.sync({ alter: true }).then(() => {
+//  console.log("Base de datos sincronizada");
 app.listen(port, () => {
   console.log("Listening on port", port);
 });
 //});
 
+//Crear nuevo usuario:
 app.post("/auth", async (req, res): Promise<void> => {
   try {
     if (req.body) {
@@ -68,13 +68,14 @@ app.post("/auth", async (req, res): Promise<void> => {
       }
       res.json(user);
     } else {
-      res.status(400).json({ error: "Error de userData en auth-controller" });
+      res.status(400).json({ error: "Error de userData en auth-controller." });
     }
   } catch (err) {
-    res.status(500).json({ error: "Error interno del servidor" });
+    res.status(500).json({ error: "Error interno del servidor." });
   }
 });
 
+//Crear token de nuevo usuario:
 app.post("/auth/token", async (req, res): Promise<void> => {
   if (!req.body) {
     res.status(400).json({ error: "No se ingresaron datos al body." });
@@ -98,6 +99,7 @@ app.use(
   }
 );
 
+//Obtengo usuario:
 app.post("/me", async (req, res) => {
   try {
     const userFound = await getUser(req);
@@ -107,15 +109,17 @@ app.post("/me", async (req, res) => {
   }
 });
 
+//Inicio de sesión:
 app.post("/login", async (req: Request, res: Response) => {
   if (req.body.email) {
     const user = await loginUser(req.body);
     res.json(user);
   } else {
-    res.status(400).json("Body vacio");
+    res.status(400).json("No se ingresaron datos al body.");
   }
 });
 
+//Actualización datos personales:
 app.post("/update-personal", async (req, res) => {
   console.log("Cuerpo recibido en el backend:", req.body);
   try {
@@ -123,71 +127,77 @@ app.post("/update-personal", async (req, res) => {
       const updatedUser = await updateUserData(req.body);
       res.json(updatedUser);
     } else {
-      res.status(400).json({ error: "No se registra userId" });
+      res.status(400).json({ error: "No se registra userId." });
     }
   } catch (error) {
-    res.status(500).json({ error: "Error interno del servidor" });
+    res.status(500).json({ error: "Error interno del servidor." });
   }
 });
 
+//Crear nuevo reporte:
 app.post("/create-report", async (req, res) => {
   if (req.body.userId) {
     const newReport = await createReport(req.body);
     res.json(newReport);
   } else {
-    res.status(400).json("Faltan datos");
+    res.status(400).json("Faltan datos.");
   }
 });
 
+//Obtener mis pets reportadas:
 app.get("/pets", async (req, res) => {
   const userId = parseInt(req.query.userId as string, 10);
   if (req.query.userId) {
     const myPets = await getAllPets(req, userId);
     res.json(myPets);
   } else {
-    res.status(400).json("Falta la query válida de userId");
+    res.status(400).json("Query inválida.");
   }
 });
 
+//Editar mi reporte:
 app.post("/edit-report", async (req, res) => {
   if (req.body.id) {
     const petUpdated = await updateReport(req.body);
     console.log(petUpdated);
     res.json(petUpdated);
   } else {
-    res.status(400).json("Falta id de mascota");
+    res.status(400).json("Falta id de mascota.");
   }
 });
 
+//Eliminar mi reporte:
 app.post("/delete-report", async (req, res) => {
   if (req.body.id) {
     const pet = await deletePet(req.body.id);
-    res.status(200).json("Mascota eliminada correctamente");
+    res.status(200).json("Mascota eliminada correctamente.");
   } else {
-    res.status(400).json("Falta id de mascota");
+    res.status(400).json("Falta id de mascota.");
   }
 });
 
+//Mascotas cercanas:
 app.get("/nearby-pets", async (req, res) => {
   if (req.query.lng && req.query.lat) {
     const response = await nearbyPets(req);
     res.json(response);
   } else {
-    res.status(400).json("Faltan datos");
+    res.status(400).json("Faltan datos.");
   }
 });
 
+//Reportar mascota cercana:
 app.post("/report-pet", async (req, res) => {
   if (req.body.id) {
     const report = await reportPet(req.body, req.body.id);
     res.json(report);
   } else {
-    res.status(400).json("Sin id en body");
+    res.status(400).json("Falta id de mascota.");
   }
 });
 
+//Enviar mail:
 app.post("/send-email", async (req, res) => {
-  console.log("Body recibido:", req.body); // <-- Agrega esto para ver qué llega
   const { email, reportName, reportPhone, reportAbout } = req.body;
   const msg = {
     to: email,
@@ -198,13 +208,13 @@ app.post("/send-email", async (req, res) => {
 
   try {
     await sgMail.send(msg);
-    res.status(200).send({ message: "Correo enviado exitosamente" });
+    res.status(200).send({ message: "Correo enviado exitosamente." });
   } catch (error) {
     console.error("Error al enviar el correo:", error);
     const err = error as any;
     res.status(500).send({
-      error: "Error al enviar el correo",
-      details: err?.response?.body?.errors || "No hay detalles disponibles",
+      error: "Error al enviar el correo.",
+      details: err?.response?.body?.errors || "No hay detalles disponibles.",
     });
   }
 });

@@ -53,7 +53,6 @@ export class LostPets extends HTMLElement {
       <!-- Fondo borroso -->
       <div class="overlay" style="display: none;"></div>
   
-      <!-- Formulario -->
       <form class="form" style="display: none;">
         <div class="container">
           <div class="close-container">
@@ -77,21 +76,21 @@ export class LostPets extends HTMLElement {
       z-index: 10; /* Header visible sobre el desenfoque */
       }
 
-        .main-container {
-        padding: 30px;
-        display: flex;
-        flex-wrap: wrap;
-        align-content: center;
-        justify-content: center;
-        align-items: center;
-        gap: 30px;
+      .main-container {
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
       }
 
-             @media (min-width: 1085px) {
-           .main-container {
-          gap: 50px;
-          }
+      @media (min-width: 1085px) {
+      .main-container {
+       gap: 50px;
         }
+      }
 
    
 
@@ -147,13 +146,13 @@ export class LostPets extends HTMLElement {
       padding: 20px;
       }
 
-        @media (min-width: 1085px) {
-          .pet-container {
-          padding: 40px 100px;
-          width: 450px;
-          height: 500px;
-          gap: 30px;
-          }
+       @media (min-width: 1085px) {
+        .pet-container {
+        padding: 40px 100px;
+        width: 450px;
+        height: 500px;
+        gap: 30px;
+        }
       }
 
       .info-pet{
@@ -298,16 +297,12 @@ export class LostPets extends HTMLElement {
           }
       }
 
-    
-
            @media (min-width: 1085px) {
           textarea {
           width: 380px;
           height: 150px;
           }
       }
-
-    
 
          @media (min-width: 768px) {
           .send-info {
@@ -328,35 +323,24 @@ export class LostPets extends HTMLElement {
     </style>
        `;
 
-    // Seleccionamos todos los botones de "Reportar"
-
     const reportButtons = this.querySelectorAll(".report-button");
-    const mainContainerEl = this.querySelector(
-      ".main-container"
-    ) as HTMLElement;
     const formEl = this.querySelector(".form") as HTMLFormElement;
     const formTitle = this.querySelector("#form-title") as HTMLElement;
-
-    const closeButtonEl = this.querySelector(
-      ".close-button"
-    ) as HTMLButtonElement;
     const overlayEl = this.querySelector(".overlay") as HTMLElement;
 
     reportButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
         const petId = button.getAttribute("data-id");
-        const petName = button.getAttribute("data-name"); // Obtenemos el nombre de la mascota
-        formTitle.textContent = `Reportar info de ${petName}`; // Cambiamos el título del form
-        formEl.style.display = "flex"; // Mostramos el formulario
-        overlayEl.style.display = "block"; // Mostramos el fondo borroso
+        const petName = button.getAttribute("data-name");
+        formTitle.textContent = `Reportar info de ${petName}`;
+        formEl.style.display = "flex";
+        overlayEl.style.display = "block";
         currentState.petId = petId;
       });
     });
 
     formEl.addEventListener("submit", async (e) => {
       e.preventDefault();
-
-      // Capturar datos del formulario
       const reportName = (document.querySelector(".name") as HTMLInputElement)
         ?.value;
       const reportPhone = (document.querySelector(".phone") as HTMLInputElement)
@@ -365,34 +349,28 @@ export class LostPets extends HTMLElement {
         document.querySelector(".location") as HTMLInputElement
       )?.value;
       const currentState = state.getState();
-      console.log("aver", currentState.petId);
-
       // Actualizar el estado con los datos del formulario
       state.setState({
         ...state.getState(),
-
         reportEmail: "celestemonterodev@gmail.com",
         reportName,
         reportPhone,
         reportAbout,
       });
 
-      // Llamar a la función para reportar la mascota
       await state.reportPet();
       await state.sendEmail();
       alert("Reporte enviado con éxito!");
-      formEl.style.display = "none"; // Cerrar el formulario
-      overlayEl.style.display = "none"; // Ocultar el fondo borroso
+      formEl.style.display = "none";
+      overlayEl.style.display = "none";
     });
 
-    // Manejo del botón de cierre
     const closeButtons = this.querySelectorAll(".close-button");
     closeButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
         e.preventDefault();
-
-        formEl.style.display = "none"; // Ocultamos el formulario
-        overlayEl.style.display = "none"; // Quitamos el fondo borroso
+        formEl.style.display = "none";
+        overlayEl.style.display = "none";
       });
     });
   }

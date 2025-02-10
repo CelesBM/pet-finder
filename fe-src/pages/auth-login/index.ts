@@ -173,7 +173,7 @@ export class AuthLogin extends HTMLElement {
         errorMessageEl.style.display = "block";
       } else {
         errorMessageEl.style.display = "none";
-        console.log("Login exitoso.");
+        //console.log("Login exitoso.");
         await state.signIn(); //una vez que el login fue exitoso y tengo el token en la data llamo la función
         Router.go("/personal-data");
       }

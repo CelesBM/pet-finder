@@ -3,7 +3,7 @@ import { Pet, User, Report } from "../associations/index";
 import { petDataAlgolia, cloudinary } from "../models/connection";
 
 type userPet = {
-  id: number; //NUEVO VER QUE NO ME CAGUE TODO
+  id: number;
   userId: number;
   petName: string;
   petImgURL: string;
@@ -19,12 +19,14 @@ type dataReport = {
   reportAbout: string;
 };
 
+//Función para crear un nuevo reporte:
 export async function createReport(userPet: userPet) {
   const { userId, petName, petImgURL, petState, petLat, petLong, petLocation } =
     userPet;
   const img = await cloudinary.uploader.upload(petImgURL); //datos de la imagen cargada
   const imgURL = img.secure_url; //URL de la imagen
   const user = await User.findOne({ where: { id: userId } });
+
   if (user) {
     const pet = await Pet.create({
       userId: user.get("id"),
@@ -35,6 +37,7 @@ export async function createReport(userPet: userPet) {
       petLong,
       petLocation,
     });
+
     try {
       const petAlgolia = await petDataAlgolia.saveObject({
         objectID: pet.get("id"),
@@ -48,6 +51,7 @@ export async function createReport(userPet: userPet) {
         userId: user.get("id"),
         petLocation,
       });
+
       return pet;
     } catch (error) {
       return error;
@@ -55,6 +59,7 @@ export async function createReport(userPet: userPet) {
   }
 }
 
+//Función para obtener todas las pets de un usuario:
 export async function getAllPets(req: Request, userId: number) {
   try {
     const allPets = await Pet.findAll({ where: { userId } });
@@ -64,6 +69,7 @@ export async function getAllPets(req: Request, userId: number) {
   }
 }
 
+//Función para actualizar el reporte de la mascota:
 export async function updateReport(userPet: userPet) {
   const {
     id,
@@ -77,18 +83,14 @@ export async function updateReport(userPet: userPet) {
   } = userPet;
 
   try {
-    // Buscar la mascota correcta por su id y userId
     const pet = await Pet.findOne({ where: { id, userId } });
-
     if (!pet) {
       throw new Error("Mascota no encontrada.");
     }
-
-    // Subir la imagen si la URL es válida
-    const img = await cloudinary.uploader.upload(petImgURL);
+    const img = await cloudinary.uploader.upload(petImgURL); //subir la imagen
     const imgURL = img.secure_url;
 
-    // Actualizar la mascota
+    //Actualizar la mascota
     await Pet.update(
       {
         petName,
@@ -98,10 +100,10 @@ export async function updateReport(userPet: userPet) {
         petLong,
         petLocation,
       },
-      { where: { id, userId } } // Asegurar que la actualización es por ID y UserID
+      { where: { id, userId } } //asegura que la actualización es por id y userId
     );
 
-    // Actualizar en Algolia
+    //Actualizar en Algolia:
     await petDataAlgolia.partialUpdateObject({
       objectID: pet.get("id"),
       petName,
@@ -114,7 +116,6 @@ export async function updateReport(userPet: userPet) {
       petLocation,
     });
 
-    // Retornar la mascota actualizada
     return {
       message: "Mascota actualizada correctamente",
       pet: {
@@ -133,23 +134,27 @@ export async function updateReport(userPet: userPet) {
   }
 }
 
+//Función para eliminar reporte:
 export async function deletePet(id: number) {
   try {
     const pet = await Pet.destroy({ where: { id } });
-    const petAlgolia = await petDataAlgolia.deleteObject(id.toString());
+    const petAlgolia = await petDataAlgolia.deleteObject(id.toString()); //elimino el algolia
     return pet;
   } catch (error) {
     return error;
   }
 }
 
+//Función para encontrar reportes cercanos:
 export async function nearbyPets(req: Request) {
   const { lng, lat } = req.query;
+
   try {
     const pet = await petDataAlgolia.search("", {
       aroundLatLng: `${lat} , ${lng}`,
       aroundRadius: 20000, //20km
     });
+
     const petFound = pet.hits.map((hit: any) => {
       return {
         objectID: hit.objectID,
@@ -160,27 +165,33 @@ export async function nearbyPets(req: Request) {
         petLocation: hit.petLocation,
       };
     });
+
     return petFound;
   } catch (error) {
     return error;
   }
 }
 
+//Función para reportar sobre una mascota cercana:
 export async function reportPet(dataReport: dataReport, id: number) {
   const { reportName, reportPhone, reportAbout } = dataReport;
+
   try {
     const pet = await Pet.findOne({
       where: { id },
     });
+
     if (!pet) {
       throw new Error("Mascota no encontrada.");
     }
+
     const report = await Report.create({
       reportName,
       reportPhone,
       reportAbout,
       petId: pet.get("id"),
     });
+
     return report;
   } catch (error) {
     return error;
